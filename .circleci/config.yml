@@ -20,6 +20,14 @@ workflows:
   pr_check:
       jobs:
         - pr-check
+            filters:
+                branches:
+                  only:
+                    - /^pull\/.*$/
   build_deploy:
       jobs:
         - build
+            filters:
+              branches:
+                only:
+                  - master
