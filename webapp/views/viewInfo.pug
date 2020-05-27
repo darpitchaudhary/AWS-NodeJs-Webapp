@@ -1,0 +1,22 @@
+doctype html
+head
+  title webappcsye
+  script(type='text/javascript').
+    if (foo) bar(1 + 5)
+  link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+form(action='/login' method='post')
+  .form-group
+    label(for='email') Email address
+    input#exampleInputEmail1.form-control(type='email' name='email' aria-describedby='emailHelp' placeholder='Enter email')
+    small#emailHelp.form-text.text-muted
+  .form-group
+    label(for='password') Password
+    input#exampleInputPassword1.form-control(type='password' name='password' placeholder='Password')
+  button.btn.btn-primary(type='submit') Submit
+if erro
+    h1 #{erro}
+if result
+    h1 User Info
+    for info in result
+        p #{info.emailId}
+        p #{info.password}

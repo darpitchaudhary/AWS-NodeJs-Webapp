@@ -1,0 +1,57 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(http-equiv='x-ua-compatible' content='ie=edge')
+  title Web App
+  meta(name='description' content='')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='stylesheet' href='stylesheets/bootstrap.min.css')
+  link(rel='stylesheet' href='stylesheets/plugins.css')
+  link(rel='stylesheet' href='stylesheets/style.css')
+  link(rel='stylesheet' href='stylesheets/custom.css')
+  script(src='javascripts/vendor/modernizr-3.5.0.min.js')
+#wrapper.wrapper
+  header.htc__header.bg--white
+    #sticky-header-with-topbar.mainmenu__wrap.sticky__header
+      .container
+        .mobile-menu.d-block.d-lg-none
+  section.htc__checkout.bg--white.section-padding--lg
+    .checkout-section
+      .container
+        .row
+          .col-lg-12.col-12.mb-30
+            div
+              div
+                a.accordion-head(data-parent='#checkout-accordion' href='#checkout-method') Welcome
+                #checkout-method.collapse.show
+                  .checkout-method.accordion-body.fix
+                    ul.checkout-method-list
+                      li.active(data-form='checkout-login-form') Login
+                      li(data-form='checkout-register-form') Register
+                    form.checkout-login-form(action='/login' method='post')
+                      .row
+                        .input-box.col-md-6.col-12.mb--20
+                          input(type='email' placeholder='Email Address' name='email')
+                        .input-box.col-md-6.col-12.mb--20
+                          input(type='password' placeholder='Password' name='password')
+                        .input-box.col-12
+                          input(type='submit' value='Login')
+                    form.checkout-register-form(action='/register' method='post')
+                      .row
+                        .input-box.col-md-6.col-12.mb--20
+                          input(type='text' placeholder='First Name' name='firstname')
+                        .input-box.col-md-6.col-12.mb--20
+                          input(type='text' placeholder='Last Name' name='lastname')
+                        .input-box.col-md-6.col-12.mb--20
+                          input(type='email' placeholder='Email Address' name='email')
+                        .input-box.col-md-6.col-12.mb--20
+                          input(type='password' placeholder='Password' name='password')
+                        .input-box.col-12
+                          input(type='submit' value='Register')
+        if erro
+          h1 #{erro}
+script(src='javascripts/vendor/jquery-3.2.1.min.js')
+script(src='javascripts/popper.min.js')
+script(src='javascripts/bootstrap.min.js')
+script(src='javascripts/plugins.js')
+script(src='javascripts/active.js')
