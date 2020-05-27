@@ -1,0 +1,50 @@
+doctype html
+head
+  title Web App
+  script(type='text/javascript').
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+  link(rel='stylesheet' type='text/css' href='style.css')
+#container.col
+  .login-form
+    form(action='/changeNames' method='post')
+      .row
+        .texty.col-md-6
+          label(for='email') Email Address
+        .col-md-6
+          .dis-box.well #{result.emailId}
+      .row
+        .texty.col-md-6
+          label(for='email') First Name
+        .col-md-6
+          .input-group
+            span.input-group-addon
+              i.glyphicon.glyphicon-user
+            p #{result.firstName}
+            input#firstname.form-control(type='text' name='firstname' placeholder="Change it")
+      .row
+        .texty.col-md-6
+          label(for='email') Last Name
+        .col-md-6
+          .input-group
+            span.input-group-addon
+              i.glyphicon.glyphicon-user
+            p #{result.lastName}
+            input#lastname.form-control(type='text' name='lastname' placeholder='Change it' )
+      .row
+        .texty.col-md-6
+          label(for='password') Password
+        .col-md-6
+          .dis-box.well *********
+      .row
+        .col-md-6
+        .col-md-3
+          button.btn.btn-success(type='submit') Change Names
+    form(action='/passwordChangePage' method='get')
+      .col-md-3
+        button.btn.btn-success(type='submit') Change Password
+    .row
+      .col-md-6
+      a.btn.btn-success(href='/logout') Logout
+    if erro
+      h1 #{erro} 

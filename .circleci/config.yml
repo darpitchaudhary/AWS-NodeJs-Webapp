@@ -1,0 +1,25 @@
+version: 2.1
+jobs: 
+  build: 
+    docker: 
+      - image: circleci/node:12.16.3
+    steps: 
+      - checkout
+      - run: cd webapp && npm install
+      - run: cd webapp && npm test
+
+  pr-check: 
+    docker: 
+      - image: circleci/node:12.16.3
+    steps: 
+      - checkout
+      - run: cd webapp && npm install
+      - run: cd webapp && npm test
+      
+workflows:
+  pr_check:
+      jobs:
+        - pr-check
+  build_deploy:
+      jobs:
+        - build

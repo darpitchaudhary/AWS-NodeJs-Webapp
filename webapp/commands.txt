@@ -1,0 +1,4 @@
+sequelize init //Do not use this, its for just making directory structure for sequelize
+
+
+sequelize db:migrate // This is required
