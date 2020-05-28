@@ -10,20 +10,27 @@ exports.home=function(req,res,next){
 
 exports.register=function(req,res,next){
     return models.Users.findOne({where:{emailId:req.body.email}}).then(userInfo => {
+        if(req.body.firstname==null || req.body.lastname==null){
+            res.render("login",{erro:"All fields are mandatory"});
+        }
         if(userInfo==null){
-            if (validator.validEmail(req.body.email) && validator.validPassword(req.body.password)) {
-                let hash = bcrypt.hashSync(req.body.password,10);
-            return models.Users.create({
-                emailId:req.body.email,
-                password:hash,
-                firstName:req.body.firstname,
-                lastName:req.body.lastname
-            }).then(user=>{
-                res.redirect('/');
-            });
+            if(req.body.firstname==="" || req.body.lastname===""){
+                res.render("login",{erro:"All fields are mandatory"});
             }else{
-                res.render('login',{erro:"Please Enter valid Email and Password"});
-            }        
+                if (validator.validEmail(req.body.email) && validator.validPassword(req.body.password)) {
+                    let hash = bcrypt.hashSync(req.body.password,10);
+                return models.Users.create({
+                    emailId:req.body.email,
+                    password:hash,
+                    firstName:req.body.firstname,
+                    lastName:req.body.lastname
+                }).then(user=>{
+                    res.redirect('/');
+                });
+                }else{
+                    res.render('login',{erro:"Please Enter valid Email and Password"});
+                }
+            }       
         }else{
                 res.render("login",{erro:"Email already exists"});
         }
