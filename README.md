@@ -7,3 +7,4 @@ Step 1
 - run "npm start"
 - run the application on the defined port
 - Can change port in bin/www file
+-------------------------------------
