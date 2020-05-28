@@ -128,3 +128,19 @@ exports.logout=function(req,res,next){
         res.redirect("/login");
     })
 }
+
+//Not used deprecate it
+exports.update=function(req,res,next){
+    if(req.body.firstname ==null || req.body.lastname ==null){
+        res.send("EMPTY FIRSTNAME OR LASTNAME");
+    }else{
+        return models.Users.findOne({where:{emailId:req.body.email,password:req.body.password}}).then(userInfo => {
+            if(userInfo==null){
+                res.render("login",{erro:"Do not have those credentials"});
+            }else{
+                res.render("viewInfo",{result:userInfo});
+                //To a new page where edit functionality is also implemented
+            }
+        });
+    }
+}
