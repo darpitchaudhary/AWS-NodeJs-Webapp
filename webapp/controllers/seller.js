@@ -11,6 +11,8 @@ exports.home=function(req,res,next){
         }else{
             res.render('seller',{result:booksData});
         }
+    }).catch((e) => { err => console.error(err.message);
+        res.render("oopspage");
     });
 }
 
@@ -23,7 +25,7 @@ exports.addBook=function(req,res,next){
     return models.Books.findOne({where:{title:req.body.title,id:req.session.userId}}).then(bookInfo => {
         if(bookInfo==null){
             if(req.body.qtybutton < 0 || req.body.qtybutton > 999||req.body.price< 0.01  || req.body.price> 9999.99) {
-                res.send("ERROR");
+                res.render("addBook",{erro:"Please fill according to the field"});
             }else{
                 if(req.body.title==="" || req.body.isbn==="" || req.body.price==="" || req.body.publishedDate==="" || req.body.authors==="" || req.body.qtybutton==="" ){
                     res.render("addBook",{erro:"All fields are mandatory"});
@@ -40,7 +42,7 @@ exports.addBook=function(req,res,next){
                         res.redirect('sell');
                     })
                     .catch((e) => { err => console.error(err.message);
-                        res.send("ERROR");
+                        res.render("oopspage");
                     });
                 } 
             }
@@ -48,6 +50,8 @@ exports.addBook=function(req,res,next){
         }else{
                 res.render("addBook",{erro:"Book for same seller already exists"});
         }
+    }).catch((e) => { err => console.error(err.message);
+        res.render("oopspage");
     });
 }
 
@@ -65,7 +69,7 @@ exports.updateBookPage=function(req,res,next){
         }
     })
     .catch((e) => { err => console.error(err.message);
-        res.send("ERROR");
+        res.render("oopspage");
     });
 }
 
@@ -80,7 +84,7 @@ exports.updateBook=function(req,res,next){
       ]}}).then(bookInfo => {
         if(bookInfo==null){
             if(req.body.qtybutton < 0 || req.body.qtybutton > 999||req.body.price< 0.01  || req.body.price> 9999.99) {
-                res.send("ERROR");
+                res.render("addBook",{erro:"Please fill according to the field"});
             }else{
                 if(req.body.title==="" || req.body.isbn==="" || req.body.price==="" || req.body.publishedDate==="" || req.body.authors==="" || req.body.qtybutton===""){
                     res.render("addBook",{erro:"All fields are mandatory"});
@@ -98,7 +102,11 @@ exports.updateBook=function(req,res,next){
                             price:req.body.price,
                         },{where:{bookId:req.body.bookId}}).then(user=>{
                             res.redirect('sell');
+                        }).catch((e) => { err => console.error(err.message);
+                            res.render("oopspage");
                         });
+                    }).catch((e) => { err => console.error(err.message);
+                        res.render("oopspage");
                     });
                 }
             }      
@@ -107,7 +115,7 @@ exports.updateBook=function(req,res,next){
         }
     })
     .catch((e) => { err => console.error(err.message);
-        res.send("ERROR");
+        res.render("oopspage");
     });
 }
 
@@ -124,6 +132,6 @@ exports.deleteBook=function(req,res,next){
         });
     })
     .catch((e) => { err => console.error(err.message);
-        res.send("ERROR");
+        res.render("oopspage");
     });
 }
