@@ -1,0 +1,60 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(http-equiv='x-ua-compatible' content='ie=edge')
+  title Menu-List || Aahar Food Delivery Html5 Template
+  meta(name='description' content='')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  // Favicons
+  link(rel='shortcut icon' href='images/favicon.ico')
+  link(rel='apple-touch-icon' href='images/icon.png')
+  // Stylesheets
+  link(rel='stylesheet' href='../stylesheets/bootstrap.min.css')
+  link(rel='stylesheet' href='../stylesheets/plugins.css')
+  link(rel='stylesheet' href='../stylesheets/style.css')
+  // Cusom css
+  link(rel='stylesheet' href='../stylesheets/custom.css')
+  // Modernizer js
+  script(src='../javascripts/vendor/modernizr-3.5.0.min.js')
+#wrapper.wrapper
+  // Start Menu Grid Area
+  section.food__menu__grid__area.section-padding--lg
+    .container
+      .list__btn
+        a.food__btn.grey--btn.theme--hover(href='viewCartPage') View Cart
+      .list__btn
+        a.food__btn.grey--btn.theme--hover(href='/') Back
+      if result
+        for books in result
+          .row.mt--30
+            .col-lg-12
+              #nav-tabContent.fd__tab__content.tab-content
+                #nav-all.food__list__tab__content.tab-pane.fade.show.active(role='tabpanel')
+                  .single__food__list.d-flex.wow.fadeInUp
+                    .food__list__thumb
+                      a(href='')
+                        // <img src="images/menu-list/1.jpg" alt="list food images">
+                    .food__list__inner.d-flex.align-items-center.justify-content-between
+                      .food__list__details
+                        h2
+                          a(href='#') #{books.title}
+                        p
+                          | #{books.authors} #{books.authors} #{books.authors} #{books.authors} #{books.authors} #{books.authors} #{books.authors} #{books.authors} #{books.authors}
+                        form(method='POST' action='addToCart')
+                          .list__btn
+                            .row
+                              .col-sm-9
+                                .product-quantity
+                                  .cart-plus-minus
+                                    input.cart-plus-minus-box(type='text' name='qtybutton' value='1')
+                            input(type='hidden' name='bookId' value=books.bookId)
+                            button.food__btn.grey--btn.theme--hover(type='submit') Add to Cart
+                      .food__rating
+                        .list__food__prize
+                          span $#{books.price}
+// JS Files
+script(src='../javascripts/vendor/jquery-3.2.1.min.js')
+script(src='../javascripts/popper.min.js')
+script(src='../javascripts/bootstrap.min.js')
+script(src='../javascripts/plugins.js')
+script(src='../javascripts/active.js')

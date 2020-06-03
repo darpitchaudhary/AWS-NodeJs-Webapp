@@ -1,0 +1,97 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(http-equiv='x-ua-compatible' content='ie=edge')
+  title Menu Details || Aahar Food Delivery Html5 Template
+  meta(name='description' content='')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  // Favicons
+  link(rel='shortcut icon' href='images/favicon.ico')
+  link(rel='apple-touch-icon' href='images/icon.png')
+  // Stylesheets
+  link(rel='stylesheet' href='../stylesheets/bootstrap.min.css')
+  link(rel='stylesheet' href='../stylesheets/plugins.css')
+  link(rel='stylesheet' href='../stylesheets/style.css')
+  // Cusom css
+  link(rel='stylesheet' href='../stylesheets/custom.css')
+  // Modernizer js
+  script(src='../javascripts/vendor/modernizr-3.5.0.min.js')
+  style.
+    .input-group .form-control:not(:first-child):not(:last-child),
+    .input-group-addon:not(:first-child):not(:last-child),
+    .input-group-btn:not(:first-child):not(:last-child) {
+    border-radius: 5px;
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font-size: 100%;
+    margin: 0;
+    width: 200%;
+    vertical-align: baseline;
+    }
+    label {
+    display: block;
+    font: 1rem 'Fira Sans', sans-serif;
+    }
+    .nomargin {
+    margin: .4rem 0;
+    }
+    .input-border {
+    border-radius: 5px;
+    }
+#wrapper.wrapper
+  section.blog__list__view.section-padding--lg.menudetails-right-sidebar.bg--white
+    .container
+      .row
+        .col-lg-12.col-md-12.col-sm-12
+          .food__menu__container
+            form#myform(method='POST' action='addBook')
+              .food__menu__inner.flex-wrap.flex-md-nowrap.flex-lg-nowrap
+                //
+                  <div class='food__menu__thumb'>
+                  <img src='' height='500' alt='images'>
+                  </div>
+                .food__menu__details
+                  .food__menu__content
+                    label(for='form7') ISBN
+                    .input-group.mb-6
+                      input.form-control(type='text' name='isbn' value='' required='')
+                    label(for='form7') Title
+                    .input-group.mb-6
+                      input.form-control(type='text' name='title' value='' required='')
+                    .row.nomargin
+                      .col-sm-6
+                        .input-group.mb-3
+                          .input-group-prepend
+                            span.input-group-text $
+                          input.form-control(type='text' name='price' value='' aria-label='Amount (to the nearest dollar)' required='')
+                      .col-sm-6
+                        .input-group.mb-3
+                          label(for='start') Start date:
+                          input#start.input-border(type='date' name='publishedDate' value='2018-11-22' min='2018-01-01' max='2019-12-31')
+                    .md-form
+                      textarea#form7.md-textarea.form-control(name='authors' rows='3')
+                      label(for='form7') Authors
+                    .row
+                      .col-sm-4
+                        .product-quantity
+                          .cart-plus-minus
+                            input.cart-plus-minus-box(type='text' name='qtybutton' value='1')
+              .product-action-wrap
+                .prodict-statas
+                .product-quantity
+                  .product-quantity
+                    .add__to__cart__btn(style='left: 0px; margin-top: 10px')
+                      button.food__btn(type='submit') Add Book
+            if erro
+              h1 #{erro}
+               
+// //Main wrapper
+// JS Files
+script(src='../javascripts/vendor/jquery-3.2.1.min.js')
+script(src='../javascripts/popper.min.js')
+script(src='../javascripts/bootstrap.min.js')
+script(src='../javascripts/plugins.js')
+script(src='../javascripts/active.js')
