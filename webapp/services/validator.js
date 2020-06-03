@@ -27,6 +27,14 @@ class Validator{
             return false;
     }
 
+    validName(name){
+        let regex = /(?!^\d+$)^.+$/ 
+        if(regex.test(name))
+            return true;
+        else
+            return false;
+    }
+
 }
 
 module.exports = Validator;

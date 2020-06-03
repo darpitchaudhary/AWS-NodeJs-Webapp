@@ -74,10 +74,10 @@ head
                       .col-sm-6
                         .input-group.mb-3
                           label(for='start') Start date:
-                          input#start.input-border(type='date' name='publishedDate' value=pubDate min='2018-01-01' max='2019-12-31')
+                          input#start.input-border(type='date' name='publishedDate' value=result.publicationDate min='2018-01-01' max='2021-12-31')
                     .md-form
                       textarea#form7.md-textarea.form-control(name='authors' rows='3') #{result.authors}
-                      label(for='form7') Authors
+                      label(for='form7') Authors (for multiple authors separate them by commas-',')
                     .row
                       .col-sm-4
                         .product-quantity
