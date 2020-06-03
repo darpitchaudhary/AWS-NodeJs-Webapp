@@ -22,14 +22,15 @@ exports.addBookPage=function(req,res,next){
 
 exports.addBook=function(req,res,next){
     //Confirm if we can change it to ISBN from title , to check if same seller can have two books with same title but different ISBN
-    return models.Books.findOne({where:{title:req.body.title,id:req.session.userId}}).then(bookInfo => {
+    return models.Books.findOne({where:{title:req.body.title,id:req.session.userId,isbn:req.body.isbn}}).then(bookInfo => {
         if(bookInfo==null){
-            if(req.body.qtybutton < 0 || req.body.qtybutton > 999||req.body.price< 0.01  || req.body.price> 9999.99) {
+            if(req.body.qtybutton < 0 || req.body.qtybutton > 999||req.body.price< 0.01  || req.body.price> 9999.99 || isNaN(req.body.price) || isNaN(req.body.qtybutton)||new Date(req.body.publishedDate)>new Date()) {
                 res.render("addBook",{erro:"Please fill according to the field"});
             }else{
                 if(req.body.title==="" || req.body.isbn==="" || req.body.price==="" || req.body.publishedDate==="" || req.body.authors==="" || req.body.qtybutton==="" ){
                     res.render("addBook",{erro:"All fields are mandatory"});
                 }else{
+                    console.log(req.body.publishedDate);
                     return models.Books.create({
                         id:req.session.userId,
                         isbn:req.body.isbn,
@@ -64,7 +65,7 @@ exports.updateBookPage=function(req,res,next){
             res.render("seller",{erro:"NO BOOKS TO SHOW"});
         }else{
             let current_datetime = new Date(booksData.publicationDate);
-            let pubDate=current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + (current_datetime.getDate()+1);
+            let pubDate=current_datetime.getFullYear()+1 + "-" + (String(current_datetime.getMonth() + 1).padStart(2,'0')) + "-" + (String(current_datetime.getDate()).padStart(2,'0'));
             res.render('updateBook',{result:booksData,pubDate:pubDate});
         }
     })
@@ -83,7 +84,7 @@ exports.updateBook=function(req,res,next){
         { id: [req.session.userId] }
       ]}}).then(bookInfo => {
         if(bookInfo==null){
-            if(req.body.qtybutton < 0 || req.body.qtybutton > 999||req.body.price< 0.01  || req.body.price> 9999.99) {
+            if(req.body.qtybutton < 0 || req.body.qtybutton > 999||req.body.price< 0.01  || req.body.price> 9999.99 || isNaN(req.body.price) || isNaN(req.body.qtybutton)||new Date(req.body.publishedDate)>new Date()) {
                 res.render("addBook",{erro:"Please fill according to the field"});
             }else{
                 if(req.body.title==="" || req.body.isbn==="" || req.body.price==="" || req.body.publishedDate==="" || req.body.authors==="" || req.body.qtybutton===""){

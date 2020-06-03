@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       publicationDate: {
         allowNull: false,
-        type: DataTypes.DATE
+        type: DataTypes.DATEONLY
       },
       quantity: {
         allowNull: false,

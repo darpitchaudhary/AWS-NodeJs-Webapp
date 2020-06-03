@@ -17,7 +17,7 @@ exports.register=function(req,res,next){
             if(req.body.firstname==="" || req.body.lastname===""){
                 res.render("login",{erro:"All fields are mandatory"});
             }else{
-                if (validator.validEmail(req.body.email) && validator.validPassword(req.body.password)) {
+                if (validator.validEmail(req.body.email) && validator.validPassword(req.body.password) && validator.validName(req.body.firstname) && validator.validName(req.body.lastname)) {
                     let hash = bcrypt.hashSync(req.body.password,10);
                 return models.Users.create({
                     emailId:req.body.email,
@@ -28,7 +28,7 @@ exports.register=function(req,res,next){
                     res.redirect('/');
                 });
                 }else{
-                    res.render('login',{erro:"Please Enter valid Email and Password"});
+                    res.render('login',{erro:"Please Enter valid Email and Password Or your name has all numbers"});
                 }
             }       
         }else{
@@ -78,12 +78,12 @@ exports.changeNames=function(req,res,next){
             }
         });
     }else{
-        if(req.body.firstname ==="" || req.body.lastname ===""){
+        if(req.body.firstname ==="" || req.body.lastname ==="" || !validator.validName(req.body.firstname) || !validator.validName(req.body.lastname)){
             return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
                 if(userInfo==null){
                     res.render("login",{erro:"Email Id isnt regsitered"});
                 }else{
-                    res.render('profile',{result:userInfo,erro:"EMPTY FIRSTNAME OR LASTNAME"});
+                    res.render('profile',{result:userInfo,erro:"EMPTY FIRSTNAME OR LASTNAME OR NAME CONTAINS ALL NUMBERS"});
                 }
             });
         }else{
