@@ -1,0 +1,23 @@
+doctype html
+head
+  title Pug
+  script(type='text/javascript').
+    if (foo) bar(1 + 5)
+.container
+  .row
+    .col-md-12
+      .error-template
+        h1
+          | Oops!
+        h2 You tried something
+        .error-details
+          | You tried something which is not allowed at this website. Please go back
+        .error-actions
+          a.btn.btn-primary.btn-lg(href='/')
+            span.glyphicon.glyphicon-home
+            |                         Take Me Home
+        if erro
+            h1 #{erro}
+            a.btn.btn-primary.btn-lg(href='buy') back to page 
+                span.glyphicon.glyphicon-home
+

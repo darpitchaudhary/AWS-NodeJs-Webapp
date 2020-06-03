@@ -21,6 +21,9 @@ exports.home=function(req,res,next){
         }else{
             res.render('buyer',{result:booksData});
         }
+    })
+    .catch((e) => { err => console.error(err.message);
+        res.render("oopspage");
     });
 
     // return models.Books.findAll().then(booksData => {
@@ -52,7 +55,7 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                 // console.log("QUANTITY:"+booksData.quantity);
                 // console.log("HELLO 1");
                 // res.send('buyer'); //Put some error
-                res.redirect('buy');
+                res.render("oopspage",{erro:"Add Less Quantity"});
             }else{
                 let quanto=booksData.quantity-req.body.qtybutton;
                 // console.log("Quanto:"+quanto);
@@ -73,9 +76,11 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                     });
                 }else{
                     // console.log("HELLO 3");
-                    res.redirect('buy'); //error - Do not have that much quantity in database
+                    res.render("oopspage",{erro:"Add Less Quantity"}); //error - Do not have that much quantity in database
                 }
             }
+        }).catch((e) => { err => console.error(err.message);
+            res.render("oopspage");
         })
     }else{
         // Books
@@ -85,7 +90,7 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                 // console.log("HELLO 3");
                 // res.render('buyer'); //Put some error
                 // res.send('cannot update with that quantity');
-                res.redirect('buy');
+                res.render("oopspage",{erro:"Add Less Quantity"});
             }else{
                 // console.log("HELLO 4");
                 //get previous vale in cart and add this one
@@ -100,6 +105,8 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                     });
                 });
             }
+        }).catch((e) => { err => console.error(err.message);
+            res.render("oopspage");
         });
     }
 });
@@ -123,6 +130,8 @@ exports.cartPage=function(req,res,next){
                   });
                 res.render('cart',{result:cartData,total:total});
         }
+    }).catch((e) => { err => console.error(err.message);
+        res.render("oopspage");
     });
 }
 
@@ -157,6 +166,10 @@ exports.cartDelete=function(req,res,next){
                 }
             });
             }
-        );
+        ).catch((e) => { err => console.error(err.message);
+            res.render("oopspage");
+        });
+    }).catch((e) => { err => console.error(err.message);
+        res.render("oopspage");
     });
 }
