@@ -21,7 +21,7 @@ head
             span.input-group-addon
               i.glyphicon.glyphicon-user
             p #{result.firstName}
-            input#firstname.form-control(type='text' name='firstname' placeholder="Change it")
+            input#firstname.form-control(type='text' name='firstname' value=result.firstName placeholder="Change it")
       .row
         .texty.col-md-6
           label(for='email') Last Name
@@ -30,7 +30,7 @@ head
             span.input-group-addon
               i.glyphicon.glyphicon-user
             p #{result.lastName}
-            input#lastname.form-control(type='text' name='lastname' placeholder='Change it' )
+            input#lastname.form-control(type='text' name='lastname' value=result.lastName placeholder='Change it' )
       .row
         .texty.col-md-6
           label(for='password') Password
