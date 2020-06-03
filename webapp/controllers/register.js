@@ -59,6 +59,7 @@ exports.login=function(req,res,next){
             if(bcrypt.compareSync(req.body.password, userInfo.password)) {
                 req.session.userLoggedIn=true;
                 req.session.emailId=req.body.email;
+                req.session.userId=userInfo.id;
                 res.render('profile',{result:userInfo});
                } else {
                 res.render("login",{erro:"Email Id and password do not match"});

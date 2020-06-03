@@ -1,0 +1,83 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(http-equiv='x-ua-compatible' content='ie=edge')
+  title Cart
+  meta(name='description' content='')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  // Favicons
+  link(rel='shortcut icon' href='images/favicon.ico')
+  link(rel='apple-touch-icon' href='images/icon.png')
+  // Stylesheets
+  link(rel='stylesheet' href='../stylesheets//bootstrap.min.css')
+  link(rel='stylesheet' href='../stylesheets//plugins.css')
+  link(rel='stylesheet' href='../stylesheets/style.css')
+  // Cusom css
+  link(rel='stylesheet' href='css/custom.css')
+  // Modernizer js
+  script(src='../javascripts/vendor/modernizr-3.5.0.min.js')
+// Main wrapper
+#wrapper.wrapper
+  // cart-main-area start
+  .cart-main-area.section-padding--lg.bg--white
+    .container
+      .row
+        .col-md-12.col-sm-12.ol-lg-12
+          .table-content.table-responsive
+            table
+              thead
+                tr.title-top
+                  // <th class="product-thumbnail">Image</th>
+                  th.product-name Title
+                  th.product-price Price
+                  th.product-quantity Quantity
+                  th.product-subtotal Total
+                  th.product-remove Remove
+              tbody
+                if result
+                  for data in result
+                    form(action='cartDelete' method='POST')
+                      tr
+                        // <td class="product-thumbnail"><a href="#"><img src="images/cart/1.jpg" alt="product img" /></a></td>
+                        td.product-name
+                          a(href='#') #{data.title}
+                        td.product-price
+                          span.amount #{data.price}
+                        td.product-quantity
+                          input(type='number' value=data.quantity disabled='')
+                          input(type='hidden' value=data.bookId name='bookId')
+                          if data.delFlag
+                            p DELETED
+                        td.product-subtotal #{data.quantity*data.price}
+                        td.product-remove
+                          button.food__btn.grey--btn.theme--hover(type='submit')  X
+          .cartbox__btn
+            ul.cart__btn__list.d-flex.flex-wrap.flex-md-nowrap.flex-lg-nowrap.justify-content-between
+              li
+                a(href='buy') Back
+              li
+                a(href='#') Check Out
+      if erro
+        h1 #{erro}
+      .row
+        .col-lg-6.offset-lg-6
+          .cartbox__total__area
+            .cartbox-total.d-flex.justify-content-between
+            //-   ul.cart__total__list
+            //-     li Cart total
+            //-     li Sub Total
+            //-   ul.cart__total__tk
+            //-     li $70
+            //-     li $70
+            .cart__total__amount
+             
+              span Grand Total
+              span #{total}
+  // cart-main-area end
+// //Main wrapper
+// JS Files
+script(src='../javascripts/vendor/jquery-3.2.1.min.js')
+script(src='../javascripts/popper.min.js')
+script(src='../javascripts/bootstrap.min.js')
+script(src='../javascripts/plugins.js')
+script(src='../javascripts/active.js')
