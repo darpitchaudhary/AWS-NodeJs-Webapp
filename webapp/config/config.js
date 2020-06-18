@@ -1,7 +1,7 @@
 require('dotenv').config();
 module.exports = 
 {
-  "development": {
+  "production": {
     "username": "root",
     "password": "root123",
     "database": "csye6225dum",
@@ -17,7 +17,7 @@ module.exports =
     "dialect": "mysql",
     "operatorsAliases": false
   },
-  "production": {
+  "development": {
     "username": process.env.RDS_USER_NAME,
     "password": process.env.RDS_PASSWORD,
     "database": process.env.RDS_DB_NAME,
