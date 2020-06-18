@@ -223,6 +223,20 @@ exports.uploadMultipleImages=function(req,res,next){
     }
 }
 
+exports.viewImageSeller=function(req,res,next){
+    return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
+        if(imgData==null){
+            res.render("viewSellImage",{erro:"NO Images TO SHOW"});
+        }else{
+            res.render("viewSellImage",{result:imgData});
+        }
+    }).catch((e) => { err => console.error(err.message);
+        console.log(e);
+        res.render("oopspage");
+    });
+}
+
+
 exports.deleteImage=function(req,res,next){
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}})
     .then((imgRes)=>{
