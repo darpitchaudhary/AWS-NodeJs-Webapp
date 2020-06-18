@@ -1,0 +1,30 @@
+doctype html
+head
+  title Bootstrap Example
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+.container
+  h2 Books Images
+  #myCarousel.carousel.slide(data-ride='carousel')
+    // Indicators
+    ol.carousel-indicators
+      li.active(data-target='#myCarousel' data-slide-to='0')
+      li(data-target='#myCarousel' data-slide-to='1')
+      li(data-target='#myCarousel' data-slide-to='2')
+    // Wrapper for slides
+    .carousel-inner
+      .item.active
+        img(src='../uploads/images/blank.jpg' alt='Los Angeles' style='width:100%;height:70%')
+      for image in result
+        .item
+            img(src='../uploads/images/'+image.imageName alt='Los Angeles' style='width:100%;height:70%')
+    // Left and right controls
+    a.left.carousel-control(href='#myCarousel' data-slide='prev')
+      span.glyphicon.glyphicon-chevron-left
+      span.sr-only Previous
+    a.right.carousel-control(href='#myCarousel' data-slide='next')
+      span.glyphicon.glyphicon-chevron-right
+      span.sr-only Next
