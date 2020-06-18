@@ -133,80 +133,128 @@ exports.updateBook=function(req,res,next){
 }
 
 exports.deleteBook=function(req,res,next){
-    return models.Image.destroy({
-        where: {
-            book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
-        }
-    }).then(()=>{
-        return models.Books.destroy({
-            where: {
-                bookId:req.body.bookId //Check for this, change it to different input value from UI
-            }
-        }).then(()=>{
-            return models.Cart.update({
-                delFlag:true
-            },{where:{bookId:req.body.bookId}}).then(user=>{
-            res.redirect('sell');
+    return models.Image.findAll({where:{book_Img_id:req.body.bookId}})
+    .then((imgRes)=>{
+        if(imgRes[0]==null){
+            return models.Image.destroy({
+                where: {
+                    book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
+                }
+            }).then(()=>{
+                return models.Books.destroy({
+                    where: {
+                        bookId:req.body.bookId //Check for this, change it to different input value from UI
+                    }
+                }).then(()=>{
+                    return models.Cart.update({
+                        delFlag:true
+                    },{where:{bookId:req.body.bookId}}).then(user=>{
+                    res.redirect('sell');
+                    });
+                })
+                .catch((e) => { err => console.error(err.message);
+                    res.render("oopspage");
+                });
+            })
+            .catch((e) => { err => console.error(err.message);
+                res.render("oopspage");
             });
-        })
-        .catch((e) => { err => console.error(err.message);
-            res.render("oopspage");
-        });
+        }else{
+            imgRes.forEach(element => {
+                var imgPath=element.imageName.split("/");
+                var objectName=imgPath[imgPath.length-1];
+                let params = {
+                    Bucket: bucket,
+                    Key: objectName
+                };
+                s3.deleteObject(params, function (err, data) {
+                    if(err){
+                        res.render("oopspage");
+                    }else{
+                        return models.Image.destroy({
+                            where: {
+                                book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
+                            }
+                        }).then(()=>{
+                            return models.Books.destroy({
+                                where: {
+                                    bookId:req.body.bookId //Check for this, change it to different input value from UI
+                                }
+                            }).then(()=>{
+                                return models.Cart.update({
+                                    delFlag:true
+                                },{where:{bookId:req.body.bookId}}).then(user=>{
+                                res.redirect('sell');
+                                });
+                            })
+                            .catch((e) => { err => console.error(err.message);
+                                res.render("oopspage");
+                            });
+                        })
+                        .catch((e) => { err => console.error(err.message);
+                            res.render("oopspage");
+                        });
+                    }
+                });
+            });
+        }
     })
-    .catch((e) => { err => console.error(err.message);
-        res.render("oopspage");
-    });
 }
 
 exports.uploadImagePage=function(req,res,next){
     res.render("uploadImage",{bookId:req.body.bookId});
 }
 
+//Change it to new
 exports.uploadMultipleImages=function(req,res,next){
-        var imgPath=req.file.path.split("/");
-        var imgName=imgPath[imgPath.length-1];
+    if (!req.file){
+        res.render("oopspage"); //show some error
+    }else{
         return models.Image.create({
-            imageName:imgName,
+            imageName:req.file.location,
             book_Img_id:req.body.bookId,
         }).then(user=>{
             res.redirect('sell');
         })
         .catch((e) => { err => console.error(err.message);
+                console.log(e);
             res.render("oopspage");
         });
+    }
 }
 
 exports.deleteImage=function(req,res,next){
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}})
-    
     .then((imgRes)=>{
-        let params = {
-            Bucket: bucket,
-            Key: 'https://s3.amazonaws.com/infrastructure.darpit.chaudhary/file.jpg'
-        };
-        s3.deleteObject(params, function (err, data) {});
-        // imgRes.forEach(element => {
-        //     let params = {
-        //         Bucket: bucket,
-        //         Key: 'file.jpg'
-        //     };
-        //     s3.deleteObject(params, function (err, data) {
-        //         if(err){
-        //             res.render("oopspage");
-        //         }else{
-        //             return models.Image.destroy({
-        //                 where: {
-        //                     book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
-        //                 }
-        //             }).then(()=>{
-        //                 res.redirect('sell');
-        //             })
-        //             .catch((e) => { err => console.error(err.message);
-        //                 res.render("oopspage");
-        //             });
-        //         }
-        //     });
-        // });
+        // res.send(imgRes);
+        if(imgRes[0]==null){
+            res.redirect('sell');
+        }else{
+            imgRes.forEach(element => {
+                var imgPath=element.imageName.split("/");
+                var objectName=imgPath[imgPath.length-1];
+                let params = {
+                    Bucket: bucket,
+                    Key: objectName
+                };
+                s3.deleteObject(params, function (err, data) {
+                    if(err){
+                        res.render("oopspage");
+                    }else{
+                        return models.Image.destroy({
+                            where: {
+                                book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
+                            }
+                        }).then(()=>{
+                            res.redirect('sell');
+                        })
+                        .catch((e) => { err => console.error(err.message);
+                            res.render("oopspage");
+                        });
+                    }
+                });
+            });
+        }
     })
 }
 
