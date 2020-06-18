@@ -33,7 +33,7 @@ head
                   .single__food__list.d-flex.wow.fadeInUp
                     .food__list__thumb
                       a(href='')
-                        // <img src="images/menu-list/1.jpg" alt="list food images">
+                      //-  img(src='uploads/images/'+result.books.imagePath alt='list food images')
                     .food__list__inner.d-flex.align-items-center.justify-content-between
                       .food__list__details
                         h2
@@ -44,6 +44,15 @@ head
                           form(method='POST' action='updateBookPage')
                             input(type='hidden' name='bookId' value=books.bookId)
                             button.food__btn.grey--btn.theme--hover(type='submit') Update Book
+                        .list__btn
+                          form(method='POST' action='uploadImagePage')
+                            input(type='hidden' name='bookId' value=books.bookId)
+                            button.food__btn.grey--btn.theme--hover(type='submit') Upload Image
+                        .list__btn
+                          form(method='POST' action='deleteImage')
+                            input(type='hidden' name='bookId' value=books.bookId)
+                            button.food__btn.grey--btn.theme--hover(type='submit') Delete Image
+
                           button.food__btn.grey--btn.theme--hover(type='button' id=books.bookId onclick='myFunction(this)') Delete Book
                           //- #myModal.modal
                           //-   // Modal content

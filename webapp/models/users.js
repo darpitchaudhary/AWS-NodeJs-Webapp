@@ -24,7 +24,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
     },
+  },
+  {
+    freezeTableName: true
   });
+
+  Users.associate = models => {
+  Users.hasOne(models.Cart, { foreignKey: 'buyer_id'});
+  Users.hasMany(models.Books, { foreignKey: 'seller_id'});
+};
 
   return Users;
 };

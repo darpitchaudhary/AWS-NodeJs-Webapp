@@ -49,6 +49,11 @@ head
                                     input.cart-plus-minus-box(type='text' name='qtybutton' value='1')
                             input(type='hidden' name='bookId' value=books.bookId)
                             button.food__btn.grey--btn.theme--hover(type='submit') Add to Cart
+                        form(method='POST' action='viewImagesPage')
+                          .list__btn
+                            .row
+                            input(type='hidden' name='bookId' value=books.bookId)
+                            button.food__btn.grey--btn.theme--hover(type='submit') View Images
                       .food__rating
                         .list__food__prize
                           span $#{books.price}

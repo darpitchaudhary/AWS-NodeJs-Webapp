@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.UUID,
       },
+      seller_id:{
+        allowNull: false,
+        type: DataTypes.UUID,
+      },
       isbn: {
         allowNull: false,
         type: DataTypes.STRING
@@ -35,7 +39,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.DOUBLE
       },
+    },
+    {
+      freezeTableName: true
     });
+  
+    Books.associate = models => {
+    Books.belongsTo(models.Users, { foreignKey: 'seller_id' });
+    Books.hasMany(models.Cart, { foreignKey: 'bookForeignId'});
+  };
 
   return Books;
 };

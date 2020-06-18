@@ -3,6 +3,9 @@ const Validator = require('../services/validator');
 const validator = new Validator();
 const session=require('express-session');
 const { Op } = require("sequelize");
+const bucket = process.env.S3_BUCKET_NAME;
+const aws = require('aws-sdk');
+let s3 = new aws.S3();
 
 exports.home=function(req,res,next){
     return models.Books.findAll({where:{[Op.not]: [
@@ -63,7 +66,9 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                     return models.Cart.create({
                         cartOneTimeId:1, //Handle this
                         bookId:req.body.bookId,
+                        bookForeignId:req.body.bookId,
                         id:req.session.userId,
+                        buyer_id:req.session.userId,
                         title:booksData.title,
                         quantity:req.body.qtybutton,
                         price:parseInt(booksData.price) //Calculate the prize //Update this prize if the seller updates
@@ -170,6 +175,67 @@ exports.cartDelete=function(req,res,next){
             res.render("oopspage");
         });
     }).catch((e) => { err => console.error(err.message);
+        res.render("oopspage");
+    });
+}
+
+
+// exports.viewImagesPage=function(req,res,next){
+//     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
+//         if(imgData==null){
+//             res.render("viewImage",{erro:"NO Images TO SHOW"});
+//         }else{
+//             var params = {Bucket: bucket, Key: imgData[0].imageName}
+//             // s3.getObject(params, function(err, data) {
+//             //     if (err) console.log(err, err.stack); // an error occurred
+//             //     else     res.send(data);           // successful response
+//             //   });
+//             var file = require('fs').createWriteStream(__dirname+'/im/'+imgData[0].imageName);
+//             s3.getObject(params).createReadStream().pipe(file);
+//             res.render("viewImage",{result:imgData});
+//         }
+//     }).catch((e) => { err => console.error(err.message);
+//         res.render("oopspage");
+//     });
+// }
+// exports.viewImagesPage=function(req,res,next){
+//     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
+//         if(imgData==null){
+//             res.render("viewImage",{erro:"NO Images TO SHOW"});
+//         }else{
+//             imgData.forEach(element =>{
+//                 var params = {Bucket: bucket, Key: element.imageName};
+//                 s3.getObject(params, function(err, data) {
+//                 if (err) console.log(err, err.stack); // an error occurred
+//                 else{
+//                     var file = require('fs').createWriteStream('public/uploads/images/'+imgData[0].imageName);
+//                     var s3Stream=s3.getObject(params).createReadStream();  
+//                     s3Stream.pipe(file).on('error', function(err) {
+//                     // capture any errors that occur when writing data to the file
+//                     console.error('File Stream:', err);
+//                     }).on('close', function() {
+//                     console.log('Done.');
+                    
+//                     });     
+//                 }           // successful response
+//             }); });
+//             res.render("viewImage",{result:imgData});
+//         }
+//     }).catch((e) => { err => console.error(err.message);
+//         console.log(e);
+//         res.render("oopspage");
+//     });
+// }
+
+exports.viewImagesPage=function(req,res,next){
+    return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
+        if(imgData==null){
+            res.render("viewImage",{erro:"NO Images TO SHOW"});
+        }else{
+            res.render("viewImage",{result:imgData});
+        }
+    }).catch((e) => { err => console.error(err.message);
+        console.log(e);
         res.render("oopspage");
     });
 }

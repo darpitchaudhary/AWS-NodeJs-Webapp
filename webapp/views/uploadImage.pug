@@ -1,0 +1,65 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(http-equiv='x-ua-compatible' content='ie=edge')
+  title Books
+  meta(name='description' content='')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  // Favicons
+  link(rel='shortcut icon' href='images/favicon.ico')
+  link(rel='apple-touch-icon' href='images/icon.png')
+  // Stylesheets
+  link(rel='stylesheet' href='../stylesheets/bootstrap.min.css')
+  link(rel='stylesheet' href='../stylesheets/plugins.css')
+  link(rel='stylesheet' href='../stylesheets/style.css')
+  // Cusom css
+  link(rel='stylesheet' href='../stylesheets/custom.css')
+  // Modernizer js
+  script(src='../javascripts/vendor/modernizr-3.5.0.min.js')
+  style.
+    .input-group .form-control:not(:first-child):not(:last-child),
+    .input-group-addon:not(:first-child):not(:last-child),
+    .input-group-btn:not(:first-child):not(:last-child) {
+    border-radius: 5px;
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font-size: 100%;
+    margin: 0;
+    width: 200%;
+    vertical-align: baseline;
+    }
+    label {
+    display: block;
+    font: 1rem 'Fira Sans', sans-serif;
+    }
+    .nomargin {
+    margin: .4rem 0;
+    }
+    .input-border {
+    border-radius: 5px;
+    }
+#wrapper.wrapper
+  section.blog__list__view.section-padding--lg.menudetails-right-sidebar.bg--white
+    .container
+      .row
+        .list__btn
+        a.food__btn.grey--btn.theme--hover(href='sell') Back
+      .row
+        .col-lg-12.col-md-12.col-sm-12
+          .food__menu__container
+            form(action='uploadMultipleImages' method='post' enctype='multipart/form-data')
+               input(type='file' accept='image/*' name='photo')
+               input(type='hidden' name='bookId' value=bookId)
+               input(type='submit' value='upload')
+            if erro
+              h1 #{erro}
+// //Main wrapper
+// JS Files
+script(src='../javascripts/vendor/jquery-3.2.1.min.js')
+script(src='../javascripts/popper.min.js')
+script(src='../javascripts/bootstrap.min.js')
+script(src='../javascripts/plugins.js')
+script(src='../javascripts/active.js')
