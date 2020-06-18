@@ -42,7 +42,7 @@ const checkLogin=(req,res,next)=>{
 router.get('/sell', seller.home);
 router.get('/addBookPage', seller.addBookPage);
 router.post('/uploadImagePage', seller.uploadImagePage);
-router.post('/uploadMultipleImages',upload.single('photo'), seller.uploadMultipleImages);
+// router.post('/uploadMultipleImages',upload.single('photo'), seller.uploadMultipleImages);
 router.post('/addBook', seller.addBook);
 router.post('/updateBookPage', seller.updateBookPage);
 router.post('/updateBook', seller.updateBook);
@@ -55,4 +55,5 @@ router.post('/addToCart', buyer.addToCart);
 router.get('/viewCartPage', buyer.cartPage);
 router.post('/cartDelete', buyer.cartDelete);
 router.post('/viewImagesPage', buyer.viewImagesPage);
+router.post('/viewImagesFromAllSellers', buyer.viewImagesFromAllSellers);
 module.exports = router;
