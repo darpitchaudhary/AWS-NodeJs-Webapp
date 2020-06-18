@@ -15,10 +15,10 @@ var upload = multer({
                         bucket: bucket,
                         acl:'public-read',
                         metadata: function (req, file, cb) {
-                                cb(null,{fieldName: file.fieldname});
+                                cb(null,{fieldName: Date.now()+"-"+file.fieldname});
                         },
                                 key: function (req, file, cb) {
-                                cb(null, file.originalname);
+                                cb(null, Date.now()+"-"+file.originalname);
                         }
   })
 });
@@ -48,7 +48,7 @@ router.post('/updateBookPage', seller.updateBookPage);
 router.post('/updateBook', seller.updateBook);
 router.post('/deleteBook', seller.deleteBook);
 router.post('/deleteImage', seller.deleteImage);
-
+router.post('/viewImageSeller', seller.viewImageSeller);
 
 router.get('/buy', buyer.home);
 router.post('/addToCart', buyer.addToCart);

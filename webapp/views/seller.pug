@@ -49,6 +49,10 @@ head
                             input(type='hidden' name='bookId' value=books.bookId)
                             button.food__btn.grey--btn.theme--hover(type='submit') Upload Image
                         .list__btn
+                          form(method='POST' action='viewImageSeller')
+                            input(type='hidden' name='bookId' value=books.bookId)
+                            button.food__btn.grey--btn.theme--hover(type='submit') View Image
+                        .list__btn
                           form(method='POST' action='deleteImage')
                             input(type='hidden' name='bookId' value=books.bookId)
                             button.food__btn.grey--btn.theme--hover(type='submit') Delete Image
