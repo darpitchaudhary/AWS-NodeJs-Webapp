@@ -54,6 +54,11 @@ head
                             .row
                             input(type='hidden' name='bookId' value=books.bookId)
                             button.food__btn.grey--btn.theme--hover(type='submit') View Images
+                        form(method='POST' action='viewImagesFromAllSellers')
+                          .list__btn
+                            .row
+                            input(type='hidden' name='bookId' value=books.bookId)
+                            button.food__btn.grey--btn.theme--hover(type='submit') View All Seller Images
                       .food__rating
                         .list__food__prize
                           span $#{books.price}

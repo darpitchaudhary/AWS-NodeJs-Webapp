@@ -239,3 +239,41 @@ exports.viewImagesPage=function(req,res,next){
         res.render("oopspage");
     });
 }
+
+exports.viewImagesFromAllSellers=function(req,res,next){
+    return models.Books.findAll({where:{bookId:req.body.bookId}}).then(bookData => {
+        if(bookData==null){
+                // console.log("Here 1");
+            res.render("viewImage",{erro:"NO Images TO SHOW"});
+        }else{
+            return models.Books.findAll({where:{title:bookData[0].title}}).then(booksCommon => {
+                if(booksCommon==null){
+                        // console.log("Here 2");
+                    res.render("viewImage",{erro:"NO Images TO SHOW"});
+                }else{
+                        // console.log("Here 3");
+                    //dsfsdf booksCommon[0].bookId
+                    var arr=[]
+                    booksCommon.forEach(element=>{
+                        arr.push(element.bookId);
+                    });
+                        console.log(arr);
+                    return models.Image.findAll({where:{book_Img_id:{[Op.in]:arr}}}).then(finalData=>{
+                        // console.log("Here 4");
+//                        res.send(finalData);
+                        res.render("viewImage",{result:finalData});
+                    }).catch((e) => { err => console.error(err.message);
+                        console.log(e);
+                        res.render("oopspage");
+                    });
+                }
+            }).catch((e) => { err => console.error(err.message);
+                console.log(e);
+                res.render("oopspage");
+            });
+        }
+    }).catch((e) => { err => console.error(err.message);
+        console.log(e);
+        res.render("oopspage");
+    });
+}
