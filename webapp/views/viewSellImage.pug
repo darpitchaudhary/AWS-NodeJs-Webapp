@@ -1,44 +1,39 @@
-html
-  head
-  body
-    | <%@page contentType="text/html" pageEncoding="UTF-8"%>
-    title errorRegister
-    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
-    link(href='https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900', rel='stylesheet')
-    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
-    link(rel='stylesheet', href='stylesheets/style.css')
-    .hero-wrap.js-fullheight.overlay(style="background-image: url('images/img2.jpg'); opacity: 0.9;background-size: cover;height: 1230px;", data-stellar-background-ratio='0.5')
-      .d-flex.justify-content-center.h-100
-        .card(style='width:600; height: 700;')
-          .card-body(style='width:fit-content; height: fit-content;')
-            h3(style='color: white;') Images Added
-            #myCarousel.carousel.slide(data-ride='carousel' style='height: 500;width: 500;')
-              // Indicators
-              ol.carousel-indicators
-                li.active(data-target='#myCarousel', data-slide-to='0')
-                li(data-target='#myCarousel', data-slide-to='1')
-                li(data-target='#myCarousel', data-slide-to='2')
-              // Wrapper for slides
-              .carousel-inner
-                .item.active
-                 img(src='images/swipe.png' alt="Swipe to see added Images")
-                 .carousel-caption(style='position:relative;')
-                   h3(style='color: white;') Swipe to see Book Images!
-                each image in result
-                 .item
-                   form(action='deleteImageIndividual', method='POST' style='position:relative;')
-                    input(type='hidden' name='imageId' value=image.imageId)
-                    button.btn.login_btn(type='submit' style='position:relative;') Delete Image
-                   img(src=image.imageName style='width:100%;height:70%') 
-              // Left and right controls
-              a.left.carousel-control(href='#myCarousel', data-slide='prev')
-                span.glyphicon.glyphicon-chevron-left
-                span.sr-only Previous
-              a.right.carousel-control(href='#myCarousel', data-slide='next')
-                span.glyphicon.glyphicon-chevron-right
-                span.sr-only Next
-          .card-body(style='background-color: #e9ecef;')
-            form(action='sell_books', method='POST')
-              button.btn.login_btn(type='submit') Go Back
+doctype html
+head
+  title Bootstrap Example
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+.container
+  h2 Books Images
+  .list__btn
+    a.food__btn.grey--btn.theme--hover(href='sell') Back
+  #myCarousel.carousel.slide(data-ride='carousel')
+    // Indicators
+    ol.carousel-indicators
+      li.active(data-target='#myCarousel' data-slide-to='0')
+      li(data-target='#myCarousel' data-slide-to='1')
+      li(data-target='#myCarousel' data-slide-to='2')
+    // Wrapper for slides
+    .carousel-inner
+      .item.active
+        img(src='../uploads/images/blank.jpg' alt='Los Angeles' style='width:100%;height:70%')
+      for image in result
+        form(action='deleteImageIndividual' method='post')
+            input(type='hidden' name='imageId' value=image.imageId)
+            .item
+              img(src=image.imageName alt='Los Angeles' style='width:100%;height:70%')
+    // Left and right controls
+    a.left.carousel-control(href='#myCarousel' data-slide='prev')
+      span.glyphicon.glyphicon-chevron-left
+      span.sr-only Previous
+    a.right.carousel-control(href='#myCarousel' data-slide='next')
+      span.glyphicon.glyphicon-chevron-right
+      span.sr-only Next
+
+  for image in result
+      form(action='deleteImageIndividual' method='post')
+          input(type='hidden' name='imageId' value=image.imageId)
+          input(type='submit' value='Delete')
