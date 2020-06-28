@@ -273,7 +273,7 @@ exports.deleteImage=function(req,res,next){
 }
 
 exports.deleteImageIndividual=function(req,res,next){
-    return models.Image.findAll({where:{ImageId:req.body.imageId}})
+    return models.Image.findAll({where:{imageId:req.body.imageId}})
     .then((imgRes)=>{
         // res.send(imgRes);
         if(imgRes[0]==null){
@@ -292,7 +292,7 @@ exports.deleteImageIndividual=function(req,res,next){
                     }else{
                         return models.Image.destroy({
                             where: {
-                                book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
+                                imageId:req.body.imageId //Check for this, change it to different input value from UI
                             }
                         }).then(()=>{
                             res.redirect('sell');
