@@ -49,6 +49,7 @@ router.post('/updateBook', seller.updateBook);
 router.post('/deleteBook', seller.deleteBook);
 router.post('/deleteImage', seller.deleteImage);
 router.post('/viewImageSeller', seller.viewImageSeller);
+router.post('/deleteImageIndividual', seller.deleteImageIndividual);
 
 router.get('/buy', buyer.home);
 router.post('/addToCart', buyer.addToCart);
