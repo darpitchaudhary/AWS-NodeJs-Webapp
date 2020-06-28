@@ -272,3 +272,37 @@ exports.deleteImage=function(req,res,next){
     })
 }
 
+exports.deleteImageIndividual=function(req,res,next){
+    return models.Image.findAll({where:{ImageId:req.body.imageId}})
+    .then((imgRes)=>{
+        // res.send(imgRes);
+        if(imgRes[0]==null){
+            res.redirect('sell');
+        }else{
+            imgRes.forEach(element => {
+                var imgPath=element.imageName.split("/");
+                var objectName=imgPath[imgPath.length-1];
+                let params = {
+                    Bucket: bucket,
+                    Key: objectName
+                };
+                s3.deleteObject(params, function (err, data) {
+                    if(err){
+                        res.render("oopspage");
+                    }else{
+                        return models.Image.destroy({
+                            where: {
+                                book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
+                            }
+                        }).then(()=>{
+                            res.redirect('sell');
+                        })
+                        .catch((e) => { err => console.error(err.message);
+                            res.render("oopspage");
+                        });
+                    }
+                });
+            });
+        }
+    })
+}
