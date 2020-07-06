@@ -3,6 +3,7 @@ const Validator = require('../services/validator');
 const validator = new Validator();
 const bcrypt = require('bcrypt');
 const session=require('express-session');
+const logger = require('../config/winston');
 
 exports.home=function(req,res,next){
     res.render('login');
@@ -25,6 +26,7 @@ exports.register=function(req,res,next){
                     firstName:req.body.firstname,
                     lastName:req.body.lastname
                 }).then(user=>{
+                    logger.info("User Registered");
                     res.redirect('/');
                 });
                 }else{

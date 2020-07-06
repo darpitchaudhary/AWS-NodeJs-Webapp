@@ -6,8 +6,11 @@ const { Op } = require("sequelize");
 const bucket = process.env.S3_BUCKET_NAME;
 const aws = require('aws-sdk');
 let s3 = new aws.S3();
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 exports.home=function(req,res,next){
+    sdc.increment('Book Listing Counter');
+    let beginTime = Date.now();
     return models.Books.findAll({where:{[Op.not]: [
         { 
         id: [req.session.userId]}
@@ -23,19 +26,17 @@ exports.home=function(req,res,next){
             res.render("buyer",{erro:"NO BOOKS TO SHOW"});
         }else{
             res.render('buyer',{result:booksData});
+            let endTime = Date.now();
+            var elapsedTime = endTime - beginTime;
+            sdc.timing('Display Home Buyer Page', elapsedTime);
         }
     })
     .catch((e) => { err => console.error(err.message);
         res.render("oopspage");
+        let endTime = Date.now();
+        var elapsed = endTime - beginTime;
+        sdc.timing('Display Home OOPS Page', elapsed);
     });
-
-    // return models.Books.findAll().then(booksData => {
-    //     if(booksData==null){
-    //         res.render("buyer",{erro:"NO BOOKS TO SHOW"});
-    //     }else{
-    //         res.render('buyer',{result:booksData});
-    //     }
-    // });
 }
 
 exports.addToCart=function(req,res,next){
