@@ -34,16 +34,12 @@ jobs:
             pwd
             ls -al
             cp aws_codedeploy_scripts/*.sh .
-            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp *.sh *.yml
+            cp webapp/cloudwatch-config.json .
+            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp *.sh *.yml cloudwatch-config.json
             ls -al
             mv csye6225-web-app-${CIRCLE_BUILD_NUM}.zip codedeploy_artifact/
             ls -al
             cd codedeploy_artifact
-            pwd
-            ls -al
-            cd ..
-            pwd
-            ls -al
       - run:
           name: upload artifact Zip to S3
           command: |
