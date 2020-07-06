@@ -9,7 +9,6 @@ let s3 = new aws.S3();
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 exports.home=function(req,res,next){
-    sdc.increment('Book Listing Counter');
     let beginTime = Date.now();
     return models.Books.findAll({where:{[Op.not]: [
         { 
@@ -25,17 +24,18 @@ exports.home=function(req,res,next){
         if(booksData==null){
             res.render("buyer",{erro:"NO BOOKS TO SHOW"});
         }else{
+            sdc.increment('Book Listing Counter');
             res.render('buyer',{result:booksData});
             let endTime = Date.now();
-            var elapsedTime = endTime - beginTime;
-            sdc.timing('Display Home Buyer Page', elapsedTime);
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Display Home Buyer Page API', elapsedTime);
         }
     })
     .catch((e) => { err => console.error(err.message);
         res.render("oopspage");
         let endTime = Date.now();
-        var elapsed = endTime - beginTime;
-        sdc.timing('Display Home OOPS Page', elapsed);
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Display Home OOPS Page', elapsedTime);
     });
 }
 
@@ -51,6 +51,7 @@ exports.addToCart=function(req,res,next){
 //update the books table quantity by removing subtracting it from previous quantity
 //insert that entry to the cart table
 //reditect to buy 
+
 return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}}).then(cartData => {
     if(cartData==null){   // in the above where condition add OrderFlag ==0 condition
         //Create a new entry
@@ -93,19 +94,14 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
         // Update the previous entry
         return models.Books.findOne({where:{bookId:req.body.bookId}}).then(booksDataFind => {
             if(booksDataFind.quantity<req.body.qtybutton){
-                // console.log("HELLO 3");
-                // res.render('buyer'); //Put some error
-                // res.send('cannot update with that quantity');
                 res.render("oopspage",{erro:"Add Less Quantity"});
             }else{
-                // console.log("HELLO 4");
                 //get previous vale in cart and add this one
                 return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId,cartOneTimeId:1}}).then(cartQuantity=>{
                     let cQ=parseInt(cartQuantity.quantity)+parseInt(req.body.qtybutton);
                     return models.Cart.update({ quantity:cQ},{where:{cartOneTimeId:1,bookId:req.body.bookId,id:req.session.userId}}).then(function(rowsUpdated){
                         let quant=parseInt(booksDataFind.quantity)-parseInt(req.body.qtybutton);
                             return models.Books.update({quantity:quant},{where:{bookId:req.body.bookId}}).then(function(rowsUpdated) {
-                                // res.render('buyer');
                                 res.redirect('buy');
                             });
                     });
@@ -123,7 +119,7 @@ exports.cartPage=function(req,res,next){
     //Update the price accordingly
     // So when user login in back he shouwl be able to view his own cart
     //Calculate the prize too for the cart individual item on the fly
-
+    let beginTime = Date.now();
     return models.Cart.findAll({where:{id:req.session.userId,cartOneTimeId:1}}).then(cartData => {
         if(cartData==null){
             res.render("cart",{erro:"NO BOOKS TO SHOW"});
@@ -135,8 +131,14 @@ exports.cartPage=function(req,res,next){
                     }
                   });
                 res.render('cart',{result:cartData,total:total});
+                let endTime = Date.now();
+                let elapsedTime = endTime - beginTime;
+                sdc.timing('Display Cart Page API', elapsedTime);
         }
     }).catch((e) => { err => console.error(err.message);
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Display Cart OOPS Page', elapsedTime);
         res.render("oopspage");
     });
 }
@@ -149,6 +151,7 @@ exports.cartDelete=function(req,res,next){
     //Update the price accordingly
     // So when user login in back he shouwl be able to view his own cart
     //Calculate the prize too for the cart individual item on the fly
+    let beginTime = Date.now();
     return models.Cart.findOne({where:{id:req.session.userId,cartOneTimeId:1,bookId:req.body.bookId}}).then(cartData => {
         let bookCartQuantity=cartData.quantity;
         return models.Cart.destroy({
@@ -170,111 +173,86 @@ exports.cartDelete=function(req,res,next){
                         res.redirect('buy');
                     });
                 }
+                let endTime = Date.now();
+                let elapsedTime = endTime - beginTime;
+                sdc.timing('Cart Delete API', elapsedTime);
             });
             }
         ).catch((e) => { err => console.error(err.message);
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Cart Delete OOPS Page', elapsedTime);
             res.render("oopspage");
         });
     }).catch((e) => { err => console.error(err.message);
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Cart Delete OOPS Page', elapsedTime);
         res.render("oopspage");
     });
 }
 
 
-// exports.viewImagesPage=function(req,res,next){
-//     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
-//         if(imgData==null){
-//             res.render("viewImage",{erro:"NO Images TO SHOW"});
-//         }else{
-//             var params = {Bucket: bucket, Key: imgData[0].imageName}
-//             // s3.getObject(params, function(err, data) {
-//             //     if (err) console.log(err, err.stack); // an error occurred
-//             //     else     res.send(data);           // successful response
-//             //   });
-//             var file = require('fs').createWriteStream(__dirname+'/im/'+imgData[0].imageName);
-//             s3.getObject(params).createReadStream().pipe(file);
-//             res.render("viewImage",{result:imgData});
-//         }
-//     }).catch((e) => { err => console.error(err.message);
-//         res.render("oopspage");
-//     });
-// }
-// exports.viewImagesPage=function(req,res,next){
-//     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
-//         if(imgData==null){
-//             res.render("viewImage",{erro:"NO Images TO SHOW"});
-//         }else{
-//             imgData.forEach(element =>{
-//                 var params = {Bucket: bucket, Key: element.imageName};
-//                 s3.getObject(params, function(err, data) {
-//                 if (err) console.log(err, err.stack); // an error occurred
-//                 else{
-//                     var file = require('fs').createWriteStream('public/uploads/images/'+imgData[0].imageName);
-//                     var s3Stream=s3.getObject(params).createReadStream();  
-//                     s3Stream.pipe(file).on('error', function(err) {
-//                     // capture any errors that occur when writing data to the file
-//                     console.error('File Stream:', err);
-//                     }).on('close', function() {
-//                     console.log('Done.');
-                    
-//                     });     
-//                 }           // successful response
-//             }); });
-//             res.render("viewImage",{result:imgData});
-//         }
-//     }).catch((e) => { err => console.error(err.message);
-//         console.log(e);
-//         res.render("oopspage");
-//     });
-// }
-
 exports.viewImagesPage=function(req,res,next){
+    let beginTime = Date.now();
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
         if(imgData==null){
             res.render("viewImage",{erro:"NO Images TO SHOW"});
         }else{
             res.render("viewImage",{result:imgData});
         }
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('View Images API', elapsedTime);
     }).catch((e) => { err => console.error(err.message);
         console.log(e);
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('View Images OOPS Page', elapsedTime);
         res.render("oopspage");
     });
 }
 
 exports.viewImagesFromAllSellers=function(req,res,next){
+    let beginTime = Date.now();
     return models.Books.findAll({where:{bookId:req.body.bookId}}).then(bookData => {
         if(bookData==null){
-                // console.log("Here 1");
             res.render("viewImage",{erro:"NO Images TO SHOW"});
         }else{
             return models.Books.findAll({where:{title:bookData[0].title}}).then(booksCommon => {
                 if(booksCommon==null){
-                        // console.log("Here 2");
                     res.render("viewImage",{erro:"NO Images TO SHOW"});
                 }else{
-                        // console.log("Here 3");
-                    //dsfsdf booksCommon[0].bookId
                     var arr=[]
                     booksCommon.forEach(element=>{
                         arr.push(element.bookId);
                     });
-                        console.log(arr);
                     return models.Image.findAll({where:{book_Img_id:{[Op.in]:arr}}}).then(finalData=>{
-                        // console.log("Here 4");
-//                        res.send(finalData);
                         res.render("viewImage",{result:finalData});
+                        let endTime = Date.now();
+                        let elapsedTime = endTime - beginTime;
+                        sdc.timing('View Images All Sellers API', elapsedTime);
                     }).catch((e) => { err => console.error(err.message);
                         console.log(e);
+                        let endTime = Date.now();
+                        let elapsedTime = endTime - beginTime;
+                        sdc.timing('View Images All Sellers OOPS Page', elapsedTime);
                         res.render("oopspage");
                     });
                 }
             }).catch((e) => { err => console.error(err.message);
                 console.log(e);
+                let endTime = Date.now();
+                let elapsedTime = endTime - beginTime;
+                sdc.timing('View Images All Sellers OOPS Page', elapsedTime);
                 res.render("oopspage");
             });
         }
     }).catch((e) => { err => console.error(err.message);
         console.log(e);
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('View Images All Sellers OOPS Page', elapsedTime);
         res.render("oopspage");
     });
 }
