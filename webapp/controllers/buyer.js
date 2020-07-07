@@ -6,6 +6,7 @@ const { Op } = require("sequelize");
 const bucket = process.env.S3_BUCKET_NAME;
 const aws = require('aws-sdk');
 let s3 = new aws.S3();
+const logger = require('../config/winston');
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 exports.home=function(req,res,next){
