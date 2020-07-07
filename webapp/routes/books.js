@@ -9,6 +9,7 @@ var multer  = require('multer');
 const multerS3 = require('multer-s3');
 var s3 = new aws.S3({ /* ... */ });
 const logger = require('../config/winston');
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 var begin_s3_timer;
 var upload = multer({
                         storage: multerS3({
@@ -58,7 +59,7 @@ const checkLogin=(req,res,next)=>{
 router.get('/sell', seller.home);
 router.get('/addBookPage', seller.addBookPage);
 router.post('/uploadImagePage', seller.uploadImagePage);
-router.post('/uploadMultipleImages',begin_time, upload.single('photo'),end_time, seller.uploadMultipleImages);
+router.post('/uploadMultipleImages',begin_time, upload.single('photo'), end_time, seller.uploadMultipleImages);
 router.post('/addBook', seller.addBook);
 router.post('/updateBookPage', seller.updateBookPage);
 router.post('/updateBook', seller.updateBook);
