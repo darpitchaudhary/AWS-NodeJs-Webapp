@@ -36,7 +36,7 @@ var end_time = function(req, res, next) {
   let end_s3_timer = Date.now();
   let elapsedTime  = end_s3_timer - begin_s3_timer; 
   sdc.timing('Time to Upload to S3', elapsedTime);
-  applog.info('Ending timer for s3 upload');
+  logger.info('Ending timer for s3 upload');
   next();
 };
 
