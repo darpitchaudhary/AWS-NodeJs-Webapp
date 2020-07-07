@@ -7,13 +7,19 @@ const bucket = process.env.S3_BUCKET_NAME;
 const aws = require('aws-sdk');
 let s3 = new aws.S3();
 const path = require('path');
+const logger = require('../config/winston');
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 exports.home=function(req,res,next){
+    let beginTime = Date.now();
     return models.Books.findAll({where:{id:req.session.userId}}).then(booksData => {
         if(booksData==null){
             res.render("seller",{erro:"NO BOOKS TO SHOW, PLEASE ADD SOME BOOKS"});
         }else{
             res.render('seller',{result:booksData});
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Seller Home Page API', elapsedTime);
         }
     })
     .catch((e) => { err => console.error(err.message);
@@ -25,10 +31,15 @@ exports.home=function(req,res,next){
 
 
 exports.addBookPage=function(req,res,next){
+    let beginTime = Date.now();
     res.render('addBook');
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('Add Book Page API', elapsedTime);
 }
 
 exports.addBook=function(req,res,next){
+    let beginTime = Date.now();
                         //Confirm if we can change it to ISBN from title , to check if same seller can have two books with same title but different ISBN
             return models.Books.findOne({where:{id:req.session.userId,isbn:req.body.isbn}}).then(bookInfo => {
                 if(bookInfo==null){
@@ -50,6 +61,9 @@ exports.addBook=function(req,res,next){
                                 price:req.body.price,
                             }).then(user=>{
                                 res.redirect('sell');
+                                let endTime = Date.now();
+                                let elapsedTime = endTime - beginTime;
+                                sdc.timing('Add Book Functionality API', elapsedTime);
                             })
                             .catch((e) => { err => console.error(err.message);
                                 res.render("oopspage");
@@ -63,15 +77,13 @@ exports.addBook=function(req,res,next){
             }).catch((e) => { err => console.error(err.message);
                 res.render("oopspage");
             });
-    //     }
-    //   });
-
 }
 
 exports.updateBookPage=function(req,res,next){
     //Change title to ISBN we are sure about it
     // AND check for similar ISBN
     //what is this bookId
+    let beginTime = Date.now();
     return models.Books.findOne({where:{bookId:req.body.bookId}}).then(booksData => {
         if(booksData==null){
             res.render("seller",{erro:"NO BOOKS TO SHOW"});
@@ -79,6 +91,9 @@ exports.updateBookPage=function(req,res,next){
             let current_datetime = new Date(booksData.publicationDate);
             let pubDate=current_datetime.getFullYear()+1 + "-" + (String(current_datetime.getMonth() + 1).padStart(2,'0')) + "-" + (String(current_datetime.getDate()).padStart(2,'0'));
             res.render('updateBook',{result:booksData,pubDate:pubDate});
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Update Book Page API', elapsedTime);
         }
     })
     .catch((e) => { err => console.error(err.message);
@@ -92,6 +107,7 @@ exports.updateBook=function(req,res,next){
     // Check for fields cannot be empty
 
     //Have to update with book id, not title  req.session.userId
+    let beginTime = Date.now();
     return models.Books.findOne({where:{isbn:req.body.isbn, [Op.not]: [
         { id: [req.session.userId] }
       ]}}).then(bookInfo => {
@@ -115,6 +131,9 @@ exports.updateBook=function(req,res,next){
                             price:req.body.price,
                         },{where:{bookId:req.body.bookId}}).then(user=>{
                             res.redirect('sell');
+                            let endTime = Date.now();
+                            let elapsedTime = endTime - beginTime;
+                            sdc.timing('Update Book Functionality API', elapsedTime);
                         }).catch((e) => { err => console.error(err.message);
                             res.render("oopspage");
                         });
@@ -133,6 +152,7 @@ exports.updateBook=function(req,res,next){
 }
 
 exports.deleteBook=function(req,res,next){
+    let beginTime = Date.now();
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}})
     .then((imgRes)=>{
         if(imgRes[0]==null){
@@ -150,6 +170,9 @@ exports.deleteBook=function(req,res,next){
                         delFlag:true
                     },{where:{bookId:req.body.bookId}}).then(user=>{
                     res.redirect('sell');
+                    let endTime = Date.now();
+                    let elapsedTime = endTime - beginTime;
+                    sdc.timing('Delete Book Functionality API', elapsedTime);
                     });
                 })
                 .catch((e) => { err => console.error(err.message);
@@ -185,6 +208,9 @@ exports.deleteBook=function(req,res,next){
                                     delFlag:true
                                 },{where:{bookId:req.body.bookId}}).then(user=>{
                                 res.redirect('sell');
+                                let endTime = Date.now();
+                                let elapsedTime = endTime - beginTime;
+                                sdc.timing('Delete Book Functionality API', elapsedTime);
                                 });
                             })
                             .catch((e) => { err => console.error(err.message);
@@ -202,11 +228,16 @@ exports.deleteBook=function(req,res,next){
 }
 
 exports.uploadImagePage=function(req,res,next){
+    let beginTime = Date.now();
     res.render("uploadImage",{bookId:req.body.bookId});
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('Upload Image Page API', elapsedTime);
 }
 
 //Change it to new
 exports.uploadMultipleImages=function(req,res,next){
+    let beginTime = Date.now();
     if (!req.file){
         res.render("oopspage"); //show some error
     }else{
@@ -215,6 +246,9 @@ exports.uploadMultipleImages=function(req,res,next){
             book_Img_id:req.body.bookId,
         }).then(user=>{
             res.redirect('sell');
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Upload Image Functionality API', elapsedTime);
         })
         .catch((e) => { err => console.error(err.message);
                 console.log(e);
@@ -224,11 +258,15 @@ exports.uploadMultipleImages=function(req,res,next){
 }
 
 exports.viewImageSeller=function(req,res,next){
+    let beginTime = Date.now();
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
         if(imgData==null){
             res.render("viewSellImage",{erro:"NO Images TO SHOW"});
         }else{
             res.render("viewSellImage",{result:imgData});
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('View Seller Images API', elapsedTime);
         }
     }).catch((e) => { err => console.error(err.message);
         console.log(e);
@@ -238,9 +276,9 @@ exports.viewImageSeller=function(req,res,next){
 
 
 exports.deleteImage=function(req,res,next){
+    let beginTime = Date.now();
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}})
     .then((imgRes)=>{
-        // res.send(imgRes);
         if(imgRes[0]==null){
             res.redirect('sell');
         }else{
@@ -269,10 +307,14 @@ exports.deleteImage=function(req,res,next){
                 });
             });
         }
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Delete Seller Images API', elapsedTime);
     })
 }
 
 exports.deleteImageIndividual=function(req,res,next){
+    let beginTime = Date.now();
     return models.Image.findAll({where:{imageId:req.body.imageId}})
     .then((imgRes)=>{
         // res.send(imgRes);
@@ -290,11 +332,15 @@ exports.deleteImageIndividual=function(req,res,next){
                     if(err){
                         res.render("oopspage");
                     }else{
+                        let dbQueryStart = Date.now();
                         return models.Image.destroy({
                             where: {
                                 imageId:req.body.imageId //Check for this, change it to different input value from UI
                             }
                         }).then(()=>{
+                            let dbQueryEnd = Date.now();
+                            let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+                            sdc.timing('Destroy Time', dbQueryelapsedTime);
                             res.redirect('sell');
                         })
                         .catch((e) => { err => console.error(err.message);
@@ -304,5 +350,8 @@ exports.deleteImageIndividual=function(req,res,next){
                 });
             });
         }
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Delete Seller Images Individual API', elapsedTime);
     })
 }

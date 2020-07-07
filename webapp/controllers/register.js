@@ -4,12 +4,18 @@ const validator = new Validator();
 const bcrypt = require('bcrypt');
 const session=require('express-session');
 const logger = require('../config/winston');
+const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 
 exports.home=function(req,res,next){
+    let beginTime = Date.now();
     res.render('login');
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('Home Page API', elapsedTime);
 }
 
 exports.register=function(req,res,next){
+    let beginTime = Date.now();
     return models.Users.findOne({where:{emailId:req.body.email}}).then(userInfo => {
         if(req.body.firstname==null || req.body.lastname==null){
             res.render("login",{erro:"All fields are mandatory"});
@@ -28,6 +34,9 @@ exports.register=function(req,res,next){
                 }).then(user=>{
                     logger.info("User Registered");
                     res.redirect('/');
+                    let endTime = Date.now();
+                    let elapsedTime = endTime - beginTime;
+                    sdc.timing('User Registeration API', elapsedTime);
                 });
                 }else{
                     res.render('login',{erro:"Please Enter valid Email and Password Or your name has all numbers"});
@@ -40,20 +49,32 @@ exports.register=function(req,res,next){
 }
 
 exports.profilePage=function(req,res,next){
+    let beginTime = Date.now();
     return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
         if(userInfo==null){
             res.render("login",{erro:"Email Id isnt regsitered"});
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Profile Page API', elapsedTime);
         }else{
             res.render('profile',{result:userInfo});
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Profile Page API', elapsedTime);
         }
     });
 }
 
 exports.loginPage=function(req,res,next){
+    let beginTime = Date.now();
     res.render('login');
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('Login Page API', elapsedTime);
 }
 
 exports.login=function(req,res,next){
+    let beginTime = Date.now();
     return models.Users.findOne({where:{emailId:req.body.email}}).then(userInfo => {
         if(userInfo==null){
             res.render("login",{erro:"Email Id isnt regsitered"});
@@ -63,6 +84,9 @@ exports.login=function(req,res,next){
                 req.session.emailId=req.body.email;
                 req.session.userId=userInfo.id;
                 res.render('profile',{result:userInfo});
+                let endTime = Date.now();
+                let elapsedTime = endTime - beginTime;
+                sdc.timing('User Authentication API', elapsedTime);
                } else {
                 res.render("login",{erro:"Email Id and password do not match"});
                }
@@ -71,6 +95,7 @@ exports.login=function(req,res,next){
 }
 
 exports.changeNames=function(req,res,next){
+    let beginTime = Date.now();
     if(req.body.firstname ==null || req.body.lastname ==null){
         return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
             if(userInfo==null){
@@ -91,16 +116,24 @@ exports.changeNames=function(req,res,next){
         }else{
             return models.Users.update({firstName:req.body.firstname,lastName:req.body.lastname},{where:{emailId:req.session.emailId}}).then(function(rowsUpdated) {
                 res.redirect('/profilePage');
+                let endTime = Date.now();
+                let elapsedTime = endTime - beginTime;
+                sdc.timing('User Authentication API', elapsedTime);
             });
         }
     }
 }
 
 exports.passwordChangePage=function(req,res,next){
+    let beginTime = Date.now();
     res.render('passwordChange');
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('Password Change Page', elapsedTime);
 }
 
 exports.changePassword=function(req,res,next){
+    let beginTime = Date.now();
     if(req.body.password ==null || req.body.newpassword ==null ){
         res.render("passwordChange",{erro:"EMPTY PASSWORD"});
     }else{
@@ -116,6 +149,9 @@ exports.changePassword=function(req,res,next){
                             let usernewpassword = bcrypt.hashSync(req.body.newpassword,10);
                             return models.Users.update({password:usernewpassword},{where:{emailId:req.session.emailId}}).then(function(rowsUpdated) {
                                 res.redirect('/logout');
+                                let endTime = Date.now();
+                                let elapsedTime = endTime - beginTime;
+                                sdc.timing('Password Change API', elapsedTime);
                             });
                         }else{
                             res.render("passwordChange",{erro:"Password is not of Proper Format"});
@@ -130,12 +166,16 @@ exports.changePassword=function(req,res,next){
 }
 
 exports.logout=function(req,res,next){
+    let beginTime = Date.now();
     req.session.destroy(err=>{
         if(err){
             res.send("Please perform this action properly");
         }
         res.clearCookie("sid");
         res.redirect("/login");
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Logout API', elapsedTime);
     })
 }
 
