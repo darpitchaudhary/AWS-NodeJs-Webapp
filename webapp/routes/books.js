@@ -8,7 +8,8 @@ const bucket = process.env.S3_BUCKET_NAME;
 var multer  = require('multer');
 const multerS3 = require('multer-s3');
 var s3 = new aws.S3({ /* ... */ });
-
+const logger = require('../config/winston');
+var begin_s3_timer;
 var upload = multer({
                         storage: multerS3({
                         s3: s3,
@@ -22,6 +23,21 @@ var upload = multer({
                         }
   })
 });
+
+var begin_time = function(req, res, next) {
+  logger.info('Starting timer for s3 upload check');
+  begin_s3_timer =Date.now();
+  next();
+};
+
+
+var end_time = function(req, res, next) {
+  let end_s3_timer = Date.now();
+  let elapsedTime  = end_s3_timer - begin_s3_timer; 
+  sdc.timing('Time to Upload to S3', elapsedTime);
+  applog.info('Ending timer for s3 upload');
+  next();
+};
 
 const redirectLogin=(req,res,next)=>{
   if(req.session.userLoggedIn==null){
@@ -42,7 +58,7 @@ const checkLogin=(req,res,next)=>{
 router.get('/sell', seller.home);
 router.get('/addBookPage', seller.addBookPage);
 router.post('/uploadImagePage', seller.uploadImagePage);
-router.post('/uploadMultipleImages',upload.single('photo'), seller.uploadMultipleImages);
+router.post('/uploadMultipleImages',begin_time, upload.single('photo'),end_time, seller.uploadMultipleImages);
 router.post('/addBook', seller.addBook);
 router.post('/updateBookPage', seller.updateBookPage);
 router.post('/updateBook', seller.updateBook);
