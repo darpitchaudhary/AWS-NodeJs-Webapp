@@ -188,7 +188,7 @@ exports.deleteBook=function(req,res,next){
                     },{where:{bookId:req.body.bookId}}).then(user=>{
                     let dbQueryEnd = Date.now();
                     let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
-                    sdc.timing('Delete Book Query', dbQueryelapsedTime);
+                    sdc.timing('S3 Delete All Images Book', dbQueryelapsedTime);
                     res.redirect('sell');
                     let endTime = Date.now();
                     let elapsedTime = endTime - beginTime;
@@ -203,6 +203,7 @@ exports.deleteBook=function(req,res,next){
                 res.render("oopspage");
             });
         }else{
+            let dbQueryStart = Date.now();
             imgRes.forEach(element => {
                 var imgPath=element.imageName.split("/");
                 var objectName=imgPath[imgPath.length-1];
@@ -227,6 +228,9 @@ exports.deleteBook=function(req,res,next){
                                 return models.Cart.update({
                                     delFlag:true
                                 },{where:{bookId:req.body.bookId}}).then(user=>{
+                                let dbQueryEnd = Date.now();
+                                let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+                                sdc.timing('S3 Delete All Images Book', dbQueryelapsedTime);
                                 res.redirect('sell');
                                 let endTime = Date.now();
                                 let elapsedTime = endTime - beginTime;
@@ -364,7 +368,7 @@ exports.deleteImageIndividual=function(req,res,next){
                         }).then(()=>{
                             let dbQueryEnd = Date.now();
                             let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
-                            sdc.timing('Destroy Time', dbQueryelapsedTime);
+                            sdc.timing('S3 Delete', dbQueryelapsedTime);
                             res.redirect('sell');
                         })
                         .catch((e) => { err => console.error(err.message);

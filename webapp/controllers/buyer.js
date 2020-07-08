@@ -213,7 +213,7 @@ exports.viewImagesPage=function(req,res,next){
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
         let dbQueryEnd = Date.now();
         let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
-        sdc.timing('View Images Query', dbQueryelapsedTime);
+        sdc.timing('S3 Download', dbQueryelapsedTime);
         if(imgData==null){
             res.render("viewImage",{erro:"NO Images TO SHOW"});
         }else{
