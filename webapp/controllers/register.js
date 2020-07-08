@@ -17,7 +17,11 @@ exports.home=function(req,res,next){
 
 exports.register=function(req,res,next){
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Users.findOne({where:{emailId:req.body.email}}).then(userInfo => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Register Query', dbQueryelapsedTime);
         if(req.body.firstname==null || req.body.lastname==null){
             res.render("login",{erro:"All fields are mandatory"});
         }
@@ -51,7 +55,11 @@ exports.register=function(req,res,next){
 
 exports.profilePage=function(req,res,next){
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Profile Query', dbQueryelapsedTime);
         if(userInfo==null){
             logger.info("Email Id isnt Registered- Unauthorized Access");
             res.render("login",{erro:"Email Id isnt regsitered"});
@@ -79,7 +87,11 @@ exports.loginPage=function(req,res,next){
 
 exports.login=function(req,res,next){
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Users.findOne({where:{emailId:req.body.email}}).then(userInfo => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Login Query', dbQueryelapsedTime);
         if(userInfo==null){
             res.render("login",{erro:"Email Id isnt regsitered"});
         }else{
@@ -102,7 +114,11 @@ exports.login=function(req,res,next){
 exports.changeNames=function(req,res,next){
     let beginTime = Date.now();
     if(req.body.firstname ==null || req.body.lastname ==null){
+        let dbQueryStart = Date.now();
         return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
+            let dbQueryEnd = Date.now();
+            let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+            sdc.timing('Change Names Query', dbQueryelapsedTime);
             if(userInfo==null){
                 res.render("login",{erro:"Email Id isnt regsitered"});
             }else{
@@ -145,7 +161,11 @@ exports.changePassword=function(req,res,next){
         if(req.body.password ==="" || req.body.newpassword ===""){
             res.render("passwordChange",{erro:"EMPTY PASSWORD"});
         }else{
+            let dbQueryStart = Date.now();
             return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
+                let dbQueryEnd = Date.now();
+                let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+                sdc.timing('Change Password Query', dbQueryelapsedTime);
                 if(userInfo==null){
                     res.render("login",{erro:"Something Went Wrong"});
                 }else{
