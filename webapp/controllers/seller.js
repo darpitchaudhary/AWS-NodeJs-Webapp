@@ -16,6 +16,7 @@ exports.home=function(req,res,next){
         if(booksData==null){
             res.render("seller",{erro:"NO BOOKS TO SHOW, PLEASE ADD SOME BOOKS"});
         }else{
+            logger.info("Seller Page Displayed");
             res.render('seller',{result:booksData});
             let endTime = Date.now();
             let elapsedTime = endTime - beginTime;
@@ -32,6 +33,7 @@ exports.home=function(req,res,next){
 
 exports.addBookPage=function(req,res,next){
     let beginTime = Date.now();
+    logger.info("Books Page Displayed");
     res.render('addBook');
     let endTime = Date.now();
     let elapsedTime = endTime - beginTime;
@@ -84,6 +86,7 @@ exports.updateBookPage=function(req,res,next){
     // AND check for similar ISBN
     //what is this bookId
     let beginTime = Date.now();
+    logger.info("Update Book Page Displayed");
     return models.Books.findOne({where:{bookId:req.body.bookId}}).then(booksData => {
         if(booksData==null){
             res.render("seller",{erro:"NO BOOKS TO SHOW"});
@@ -108,6 +111,7 @@ exports.updateBook=function(req,res,next){
 
     //Have to update with book id, not title  req.session.userId
     let beginTime = Date.now();
+    logger.info("Book Updated");
     return models.Books.findOne({where:{isbn:req.body.isbn, [Op.not]: [
         { id: [req.session.userId] }
       ]}}).then(bookInfo => {
