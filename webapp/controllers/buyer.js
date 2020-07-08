@@ -58,10 +58,15 @@ exports.addToCart=function(req,res,next){
 //insert that entry to the cart table
 //reditect to buy 
 logger.info("Add to Cart");
+let beginTime = Date.now();
+let dbQueryStart = Date.now();
 return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}}).then(cartData => {
     if(cartData==null){   // in the above where condition add OrderFlag ==0 condition
         //Create a new entry
         return models.Books.findOne({where:{bookId:req.body.bookId}}).then(booksData => {
+            let dbQueryEnd = Date.now();
+            let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+            sdc.timing('Add to Cart Query', dbQueryelapsedTime);
             if(booksData.quantity<req.body.qtybutton){
                 // console.log("QUANTITY:"+booksData.quantity);
                 // console.log("HELLO 1");
@@ -92,6 +97,9 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                     res.render("oopspage",{erro:"Add Less Quantity"}); //error - Do not have that much quantity in database
                 }
             }
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Add to Cart', elapsedTime);
         }).catch((e) => { err => console.error(err.message);
             res.render("oopspage");
         })
@@ -99,6 +107,9 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
         // Books
         // Update the previous entry
         return models.Books.findOne({where:{bookId:req.body.bookId}}).then(booksDataFind => {
+            let dbQueryEnd = Date.now();
+            let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+            sdc.timing('Add to Cart Query', dbQueryelapsedTime);
             if(booksDataFind.quantity<req.body.qtybutton){
                 res.render("oopspage",{erro:"Add Less Quantity"});
             }else{
@@ -113,6 +124,9 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                     });
                 });
             }
+            let endTime = Date.now();
+            let elapsedTime = endTime - beginTime;
+            sdc.timing('Add to Cart', elapsedTime);
         }).catch((e) => { err => console.error(err.message);
             res.render("oopspage");
         });

@@ -287,7 +287,11 @@ exports.uploadMultipleImages=function(req,res,next){
 
 exports.viewImageSeller=function(req,res,next){
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('S3 Fetch', dbQueryelapsedTime);
         if(imgData==null){
             res.render("viewSellImage",{erro:"NO Images TO SHOW"});
         }else{
