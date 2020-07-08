@@ -12,7 +12,11 @@ const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 81
 
 exports.home=function(req,res,next){
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Books.findAll({where:{id:req.session.userId}}).then(booksData => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Seller Home Page Query', dbQueryelapsedTime);
         if(booksData==null){
             res.render("seller",{erro:"NO BOOKS TO SHOW, PLEASE ADD SOME BOOKS"});
         }else{
@@ -52,6 +56,7 @@ exports.addBook=function(req,res,next){
                             res.render("addBook",{erro:"All fields are mandatory"});
                         }else{
                             // console.log(req.body.publishedDate);
+                            let dbQueryStart = Date.now();
                             return models.Books.create({
                                 id:req.session.userId,
                                 seller_id:req.session.userId,
@@ -62,6 +67,9 @@ exports.addBook=function(req,res,next){
                                 quantity:req.body.qtybutton,
                                 price:req.body.price,
                             }).then(user=>{
+                                let dbQueryEnd = Date.now();
+                                let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+                                sdc.timing('Add Book Query', dbQueryelapsedTime);
                                 res.redirect('sell');
                                 let endTime = Date.now();
                                 let elapsedTime = endTime - beginTime;
@@ -122,6 +130,7 @@ exports.updateBook=function(req,res,next){
                 if(req.body.title==="" || req.body.isbn==="" || req.body.price==="" || req.body.publishedDate==="" || req.body.authors==="" || req.body.qtybutton===""){
                     res.render("addBook",{erro:"All fields are mandatory"});
                 }else{
+                    let dbQueryStart = Date.now();
                     return models.Books.update({
                         isbn:req.body.isbn,
                         title:req.body.title,
@@ -134,6 +143,9 @@ exports.updateBook=function(req,res,next){
                             title:req.body.title,
                             price:req.body.price,
                         },{where:{bookId:req.body.bookId}}).then(user=>{
+                            let dbQueryEnd = Date.now();
+                            let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+                            sdc.timing('Update Book Query', dbQueryelapsedTime);
                             res.redirect('sell');
                             let endTime = Date.now();
                             let elapsedTime = endTime - beginTime;
@@ -160,6 +172,7 @@ exports.deleteBook=function(req,res,next){
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}})
     .then((imgRes)=>{
         if(imgRes[0]==null){
+            let dbQueryStart = Date.now();
             return models.Image.destroy({
                 where: {
                     book_Img_id:req.body.bookId //Check for this, change it to different input value from UI
@@ -173,6 +186,9 @@ exports.deleteBook=function(req,res,next){
                     return models.Cart.update({
                         delFlag:true
                     },{where:{bookId:req.body.bookId}}).then(user=>{
+                    let dbQueryEnd = Date.now();
+                    let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+                    sdc.timing('Delete Book Query', dbQueryelapsedTime);
                     res.redirect('sell');
                     let endTime = Date.now();
                     let elapsedTime = endTime - beginTime;
@@ -245,10 +261,14 @@ exports.uploadMultipleImages=function(req,res,next){
     if (!req.file){
         res.render("oopspage"); //show some error
     }else{
+        let dbQueryStart = Date.now();
         return models.Image.create({
             imageName:req.file.location,
             book_Img_id:req.body.bookId,
         }).then(user=>{
+            let dbQueryEnd = Date.now();
+            let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+            sdc.timing('Image Upload Query', dbQueryelapsedTime);
             res.redirect('sell');
             let endTime = Date.now();
             let elapsedTime = endTime - beginTime;
