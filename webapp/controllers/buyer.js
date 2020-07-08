@@ -11,6 +11,7 @@ const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 81
 
 exports.home=function(req,res,next){
     let beginTime = Date.now();
+    logger.info("Buyer Page Displayed");
     return models.Books.findAll({where:{[Op.not]: [
         { 
         id: [req.session.userId]}
@@ -52,7 +53,7 @@ exports.addToCart=function(req,res,next){
 //update the books table quantity by removing subtracting it from previous quantity
 //insert that entry to the cart table
 //reditect to buy 
-
+logger.info("Add to Cart");
 return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}}).then(cartData => {
     if(cartData==null){   // in the above where condition add OrderFlag ==0 condition
         //Create a new entry

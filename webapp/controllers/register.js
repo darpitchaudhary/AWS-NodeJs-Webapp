@@ -8,6 +8,7 @@ const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 81
 
 exports.home=function(req,res,next){
     let beginTime = Date.now();
+    logger.info("Login/Register Page Displayed");
     res.render('login');
     let endTime = Date.now();
     let elapsedTime = endTime - beginTime;
@@ -52,11 +53,13 @@ exports.profilePage=function(req,res,next){
     let beginTime = Date.now();
     return models.Users.findOne({where:{emailId:req.session.emailId}}).then(userInfo => {
         if(userInfo==null){
+            logger.info("Email Id isnt Registered- Unauthorized Access");
             res.render("login",{erro:"Email Id isnt regsitered"});
             let endTime = Date.now();
             let elapsedTime = endTime - beginTime;
             sdc.timing('Profile Page API', elapsedTime);
         }else{
+            logger.info("User Profile Page Display");
             res.render('profile',{result:userInfo});
             let endTime = Date.now();
             let elapsedTime = endTime - beginTime;
@@ -67,6 +70,7 @@ exports.profilePage=function(req,res,next){
 
 exports.loginPage=function(req,res,next){
     let beginTime = Date.now();
+    logger.info("Login Page Displayed");
     res.render('login');
     let endTime = Date.now();
     let elapsedTime = endTime - beginTime;
@@ -83,6 +87,7 @@ exports.login=function(req,res,next){
                 req.session.userLoggedIn=true;
                 req.session.emailId=req.body.email;
                 req.session.userId=userInfo.id;
+                logger.info("Login Successfull");
                 res.render('profile',{result:userInfo});
                 let endTime = Date.now();
                 let elapsedTime = endTime - beginTime;
