@@ -12,6 +12,7 @@ const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 81
 exports.home=function(req,res,next){
     let beginTime = Date.now();
     logger.info("Buyer Page Displayed");
+    let dbQueryStart = Date.now();
     return models.Books.findAll({where:{[Op.not]: [
         { 
         id: [req.session.userId]}
@@ -23,6 +24,9 @@ exports.home=function(req,res,next){
         ['price', 'ASC'],
         ['quantity', 'ASC'],
     ]}).then(booksData => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Buyer Books Query', dbQueryelapsedTime);
         if(booksData==null){
             res.render("buyer",{erro:"NO BOOKS TO SHOW"});
         }else{
@@ -122,7 +126,11 @@ exports.cartPage=function(req,res,next){
     // So when user login in back he shouwl be able to view his own cart
     //Calculate the prize too for the cart individual item on the fly
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Cart.findAll({where:{id:req.session.userId,cartOneTimeId:1}}).then(cartData => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Cart Query', dbQueryelapsedTime);
         if(cartData==null){
             res.render("cart",{erro:"NO BOOKS TO SHOW"});
         }else{
@@ -154,7 +162,11 @@ exports.cartDelete=function(req,res,next){
     // So when user login in back he shouwl be able to view his own cart
     //Calculate the prize too for the cart individual item on the fly
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Cart.findOne({where:{id:req.session.userId,cartOneTimeId:1,bookId:req.body.bookId}}).then(cartData => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('Cart Delete Query', dbQueryelapsedTime);
         let bookCartQuantity=cartData.quantity;
         return models.Cart.destroy({
             where: {
@@ -197,7 +209,11 @@ exports.cartDelete=function(req,res,next){
 
 exports.viewImagesPage=function(req,res,next){
     let beginTime = Date.now();
+    let dbQueryStart = Date.now();
     return models.Image.findAll({where:{book_Img_id:req.body.bookId}}).then(imgData => {
+        let dbQueryEnd = Date.now();
+        let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
+        sdc.timing('View Images Query', dbQueryelapsedTime);
         if(imgData==null){
             res.render("viewImage",{erro:"NO Images TO SHOW"});
         }else{
