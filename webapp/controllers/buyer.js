@@ -68,13 +68,11 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
             let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
             sdc.timing('Add to Cart Query', dbQueryelapsedTime);
             if(booksData.quantity<req.body.qtybutton){
-                // console.log("QUANTITY:"+booksData.quantity);
-                // console.log("HELLO 1");
-                // res.send('buyer'); //Put some error
+                logger.info("Quantity Calculated");
                 res.render("oopspage",{erro:"Add Less Quantity"});
             }else{
                 let quanto=booksData.quantity-req.body.qtybutton;
-                // console.log("Quanto:"+quanto);
+                logger.info("Quantity Calculated");
                 if(quanto>=0){
                     return models.Cart.create({
                         cartOneTimeId:1, //Handle this
@@ -86,14 +84,13 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
                         quantity:req.body.qtybutton,
                         price:parseInt(booksData.price) //Calculate the prize //Update this prize if the seller updates
                     }).then(user=>{
-                        // console.log("HELLO 2");
+                        logger.info("Quantity Added");
                         let quant=booksData.quantity-req.body.qtybutton;
                         return models.Books.update({quantity:quant},{where:{bookId:req.body.bookId}}).then(function(rowsUpdated) {
                             res.redirect('buy');
                         });
                     });
                 }else{
-                    // console.log("HELLO 3");
                     res.render("oopspage",{erro:"Add Less Quantity"}); //error - Do not have that much quantity in database
                 }
             }
@@ -105,7 +102,7 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
         })
     }else{
         // Books
-        // Update the previous entry
+        logger.info("Updating the previous Quantity");
         return models.Books.findOne({where:{bookId:req.body.bookId}}).then(booksDataFind => {
             let dbQueryEnd = Date.now();
             let dbQueryelapsedTime = dbQueryEnd - dbQueryStart;
@@ -113,7 +110,7 @@ return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId}
             if(booksDataFind.quantity<req.body.qtybutton){
                 res.render("oopspage",{erro:"Add Less Quantity"});
             }else{
-                //get previous vale in cart and add this one
+                logger.info("Get previous vale in cart and add this one");
                 return models.Cart.findOne({where:{bookId:req.body.bookId,id:req.session.userId,cartOneTimeId:1}}).then(cartQuantity=>{
                     let cQ=parseInt(cartQuantity.quantity)+parseInt(req.body.qtybutton);
                     return models.Cart.update({ quantity:cQ},{where:{cartOneTimeId:1,bookId:req.body.bookId,id:req.session.userId}}).then(function(rowsUpdated){
