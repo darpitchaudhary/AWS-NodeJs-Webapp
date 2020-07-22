@@ -219,3 +219,19 @@ exports.update=function(req,res,next){
         });
     }
 }
+
+exports.passwordResetLink=function(req,res,next){
+    let beginTime = Date.now();
+    res.render('passwordReset');
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('PasswordResetLink', elapsedTime);
+}
+
+exports.passwordReset=function(req,res,next){
+    let beginTime = Date.now();
+    res.render('passwordReset');
+    let endTime = Date.now();
+    let elapsedTime = endTime - beginTime;
+    sdc.timing('Password_Reset', elapsedTime);
+}

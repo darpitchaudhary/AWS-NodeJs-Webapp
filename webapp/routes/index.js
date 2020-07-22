@@ -29,5 +29,7 @@ router.post('/changeNames', redirectLogin, register.changeNames);
 router.get('/passwordChangePage', redirectLogin, register.passwordChangePage);
 router.post('/changePassword', redirectLogin, register.changePassword);
 router.get('/logout', redirectLogin, register.logout);
+router.get('/passwordResetLink', register.passwordResetLink);
+router.post('/passwordReset', register.passwordReset);
 
 module.exports = router;
