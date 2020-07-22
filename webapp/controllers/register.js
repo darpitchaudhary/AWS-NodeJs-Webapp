@@ -222,6 +222,7 @@ exports.update=function(req,res,next){
 
 exports.passwordResetLink=function(req,res,next){
     let beginTime = Date.now();
+    logger.info("Password Reset Request Page");
     res.render('passwordReset');
     let endTime = Date.now();
     let elapsedTime = endTime - beginTime;
@@ -230,6 +231,7 @@ exports.passwordResetLink=function(req,res,next){
 
 exports.passwordReset=function(req,res,next){
     let beginTime = Date.now();
+    logger.info("Password Reset Request Initiated");
     res.render('passwordReset');
     let endTime = Date.now();
     let elapsedTime = endTime - beginTime;
