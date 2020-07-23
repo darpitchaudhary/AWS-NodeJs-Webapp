@@ -245,6 +245,7 @@ exports.passwordReset=function(req,res,next){
             let topic_params = {Name: 'password_reset'};
             snsObj.createTopic(topic_params, (err, data) => { 
                 let password_reset_link = 'http://'+process.env.MY_DOMAIN+'/reset?email=' + password_reset_email + '&token=' + uuidv4();
+                logger.info(password_reset_link);
                 let topic_payload = {
                     data: {
                         email: password_reset_email,
