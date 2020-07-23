@@ -7,7 +7,7 @@ const logger = require('../config/winston');
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
 // const uuidv4 = require('uuid/v4');
 const aws = require('aws-sdk');
-// aws.config.update({region: 'us-east-1'});
+aws.config.update({region: 'us-east-1'});
 const { v4: uuidv4 } = require('uuid');
 var snsObj = new aws.SNS({});
 
