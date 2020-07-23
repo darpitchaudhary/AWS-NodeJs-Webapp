@@ -5,6 +5,11 @@ const bcrypt = require('bcrypt');
 const session=require('express-session');
 const logger = require('../config/winston');
 const SDC = require('statsd-client'), sdc = new SDC({host: 'localhost', port: 8125});
+const uuidv4 = require('uuid/v4');
+const aws = require('aws-sdk');
+// aws.config.update({region: 'us-east-1'});
+const { v4: uuidv4 } = require('uuid');
+var snsObj = new aws.SNS({});
 
 exports.home=function(req,res,next){
     let beginTime = Date.now();
@@ -232,8 +237,32 @@ exports.passwordResetLink=function(req,res,next){
 exports.passwordReset=function(req,res,next){
     let beginTime = Date.now();
     logger.info("Password Reset Request Initiated");
-    res.render('passwordReset');
-    let endTime = Date.now();
-    let elapsedTime = endTime - beginTime;
-    sdc.timing('Password_Reset', elapsedTime);
+    let password_reset_email = req.body.email;
+    return models.Users.findOne({where:{emailId:req.body.email}}).then(userInfo => {
+        if(userInfo==null){
+            res.render("passwordReset",{erro:"Do not have the emailid registered"});
+        }else{
+            let topic_params = {Name: 'password_reset'};
+            snsObj.createTopic(topic_params, (err, data) => { 
+                let password_reset_link = 'http://'+process.env.MY_DOMAIN+'/reset?email=' + password_reset_email + '&token=' + uuidv4();
+                let topic_payload = {
+                    data: {
+                        email: password_reset_email,
+                        link: password_reset_link
+                    }
+                };
+                topic_payload.data = JSON.stringify(topic_payload.data);
+                topic_payload = JSON.stringify(topic_payload);
+
+                let publish_params = {Message: topic_payload, TopicArn: data.TopicArn};
+                snsObj.publish(publish_params, (err, data) => { 
+                    res.redirect('/');
+                }
+                )
+            })
+        }
+        let endTime = Date.now();
+        let elapsedTime = endTime - beginTime;
+        sdc.timing('Password_Reset', elapsedTime);
+    });
 }
