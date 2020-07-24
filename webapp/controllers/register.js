@@ -257,7 +257,7 @@ exports.passwordReset=function(req,res,next){
 
                 let publish_params = {Message: topic_payload, TopicArn: data.TopicArn};
                 snsObj.publish(publish_params, (err, data) => { 
-                    res.redirect('/');
+                    res.render("login",{erro:"Email to change password has been sent to your account"});
                 }
                 )
             })
