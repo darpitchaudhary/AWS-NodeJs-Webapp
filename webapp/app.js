@@ -24,8 +24,7 @@ app.use(session({
   name:'sid',
   cookie: { maxAge: TWO_HOURS,
             sameSite:true,
-            secure: true,
-            httpOnly:false},
+            secure: false },
   secret: 'keyboard cat',
   resave: false, // change this and check and $rolling parameter
   saveUninitialized: false, //change this to check
